@@ -38,6 +38,7 @@ job_skills_project/
 
 ## Prerequisites
 - A valid Claude API key for automated fetching and analysis (different from Claude chatbot, subscribe [here](https://claude.com/pricing#api)).
+- Python>=3.12
 
 ## Quick start
 ```bash
