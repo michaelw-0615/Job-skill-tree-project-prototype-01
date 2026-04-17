@@ -40,7 +40,7 @@ job_skills_project/
 - A valid Claude API key for automated fetching and analysis (different from Claude chatbot, subscribe [here](https://claude.com/pricing#api)).
 - Python>=3.12
 
-## Quick start
+## Use
 ```bash
 # 0. Configure (If Python is already installed globally)
 python -m venv --system-site-packages .venv
@@ -65,6 +65,11 @@ python run_pipeline.py --refresh
 
 # 6. Dry-run with seed data (no API key needed)
 python run_pipeline.py --dry-run
+
+# 7. Display of visualization results
+python -m http.server 8080
+# Then enter the following in a browser tab:
+<your_project_path>/<your_project_directory>/output/<html_file_name>.html
 ```
 
 ## Cron setup
