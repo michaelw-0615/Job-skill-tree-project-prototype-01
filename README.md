@@ -37,7 +37,7 @@ job_skills_project/
 ```
 
 ## Prerequisites
-- A valid Claude API key for automated fetching and analysis (different from Claude chatbot, subscribe [here]<https://claude.com/pricing#api>).
+- A valid Claude API key for automated fetching and analysis (different from Claude chatbot, subscribe [here](https://claude.com/pricing#api)).
 
 ## Quick start
 ```bash
