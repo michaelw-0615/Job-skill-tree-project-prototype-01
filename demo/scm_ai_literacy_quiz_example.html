@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI Literacy Assessment — Supply Chain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── Reset & root ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c0f;
+  --surface:#111418;
+  --surface2:#181c22;
+  --border:#1e2530;
+  --border2:#262e3a;
+  --text:#e8eaf0;
+  --muted:#5a6478;
+  --muted2:#3a4256;
+  --accent:#00d4ff;
+  --accent2:#0099cc;
+  --gold:#ffc940;
+  --silver:#c0c8d8;
+  --bronze:#cd7f40;
+  --green:#00e57a;
+  --red:#ff4d6a;
+  --orange:#ff8c40;
+  --easy:#00e57a;
+  --medium:#ffc940;
+  --hard:#ff4d6a;
+  --radius:10px;
+  --mono:'DM Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --body:'Instrument Sans',sans-serif;
+}
+html{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh}
+body{min-height:100vh;overflow-x:hidden}
+
+/* ── Grid noise bg ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,212,255,0.08),transparent);
+}
+
+.app{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 20px 80px}
+
+/* ── Header ── */
+.site-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 0 28px;border-bottom:1px solid var(--border);margin-bottom:32px;
+}
+.logo{
+  font-family:var(--display);font-size:2rem;letter-spacing:.06em;
+  color:var(--accent);line-height:1;
+}
+.logo span{color:var(--text);opacity:.4}
+.header-right{display:flex;align-items:center;gap:12px}
+.nav-btn{
+  background:transparent;border:1px solid var(--border2);color:var(--muted);
+  padding:7px 16px;border-radius:var(--radius);cursor:pointer;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;
+  transition:all .2s;
+}
+.nav-btn:hover,.nav-btn.active{border-color:var(--accent);color:var(--accent)}
+.nav-btn.active{background:rgba(0,212,255,.06)}
+
+/* ── Screens ── */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ══════════ LANDING ══════════ */
+.landing-hero{text-align:center;padding:40px 0 48px}
+.hero-tag{
+  display:inline-block;font-family:var(--mono);font-size:.68rem;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--accent);
+  background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);
+  padding:5px 14px;border-radius:999px;margin-bottom:24px;
+}
+.hero-title{
+  font-family:var(--display);font-size:clamp(3.5rem,10vw,6.5rem);
+  letter-spacing:.04em;line-height:.95;color:var(--text);
+  margin-bottom:8px;
+}
+.hero-title .hl{color:var(--accent)}
+.hero-sub{
+  font-size:1rem;color:var(--muted);max-width:520px;margin:20px auto 0;
+  line-height:1.7;font-weight:400;
+}
+
+.test-specs{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin:40px 0;
+}
+.spec-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px 16px;text-align:center;
+}
+.spec-val{
+  font-family:var(--display);font-size:2.4rem;color:var(--accent);
+  letter-spacing:.04em;line-height:1;margin-bottom:6px;
+}
+.spec-label{font-size:.72rem;color:var(--muted);font-family:var(--mono);letter-spacing:.06em}
+
+.register-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:32px;max-width:480px;margin:0 auto;
+}
+.register-card h3{
+  font-family:var(--display);font-size:1.6rem;letter-spacing:.04em;
+  margin-bottom:6px;
+}
+.register-card p{font-size:.85rem;color:var(--muted);margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{
+  display:block;font-family:var(--mono);font-size:.7rem;
+  letter-spacing:.08em;color:var(--muted);margin-bottom:6px;
+}
+.field input,.field select{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  color:var(--text);padding:10px 14px;border-radius:8px;
+  font-family:var(--body);font-size:.9rem;outline:none;
+  transition:border-color .2s;
+}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.field select option{background:var(--surface2)}
+.start-btn{
+  width:100%;background:var(--accent);color:#000;
+  font-family:var(--display);font-size:1.4rem;letter-spacing:.06em;
+  padding:14px;border:none;border-radius:8px;cursor:pointer;
+  transition:all .2s;margin-top:8px;
+}
+.start-btn:hover{background:#33ddff;transform:translateY(-1px)}
+.start-btn:active{transform:translateY(0)}
+
+/* ══════════ QUIZ ══════════ */
+.quiz-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:28px;flex-wrap:wrap;gap:12px;
+}
+.progress-wrap{flex:1;min-width:200px}
+.progress-meta{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:.68rem;color:var(--muted);
+  margin-bottom:6px;
+}
+.progress-track{
+  height:4px;background:var(--surface2);border-radius:999px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--accent);border-radius:999px;
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+}
+.score-live{
+  display:flex;align-items:center;gap:16px;flex-shrink:0;
+}
+.score-chip{
+  font-family:var(--mono);font-size:.75rem;
+  background:var(--surface);border:1px solid var(--border2);
+  padding:6px 14px;border-radius:999px;
+}
+.score-chip span{color:var(--accent);font-weight:500}
+.diff-badge{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;
+  padding:4px 10px;border-radius:999px;text-transform:uppercase;
+}
+.diff-badge.easy{background:rgba(0,229,122,.1);color:var(--easy);border:1px solid rgba(0,229,122,.2)}
+.diff-badge.medium{background:rgba(255,201,64,.1);color:var(--medium);border:1px solid rgba(255,201,64,.2)}
+.diff-badge.hard{background:rgba(255,77,106,.1);color:var(--hard);border:1px solid rgba(255,77,106,.2)}
+
+/* Timer */
+.timer-wrap{display:flex;align-items:center;gap:8px}
+.timer-ring{position:relative;width:44px;height:44px}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-ring circle{transition:stroke-dashoffset .9s linear;stroke-linecap:round}
+.timer-num{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.75rem;font-weight:500;
+}
+.timer-num.warning{color:var(--red)}
+
+/* Question card */
+.question-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:32px;margin-bottom:20px;
+  animation:slideIn .35s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.q-number{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;
+  color:var(--muted);margin-bottom:14px;
+  text-transform:uppercase;
+}
+.q-category{
+  display:inline-block;font-family:var(--mono);font-size:.65rem;
+  letter-spacing:.08em;color:var(--accent);
+  background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);
+  padding:3px 10px;border-radius:999px;margin-bottom:16px;
+}
+.q-text{
+  font-size:1.08rem;line-height:1.65;color:var(--text);
+  margin-bottom:28px;font-weight:400;
+}
+.q-scenario{
+  background:var(--surface2);border-left:3px solid var(--accent);
+  padding:14px 18px;border-radius:0 8px 8px 0;
+  font-size:.88rem;color:var(--muted);line-height:1.6;
+  margin-bottom:20px;font-style:italic;
+}
+
+/* Options */
+.options{display:flex;flex-direction:column;gap:10px}
+.option{
+  display:flex;align-items:flex-start;gap:14px;
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:14px 18px;cursor:pointer;
+  transition:all .18s;position:relative;overflow:hidden;
+  text-align:left;width:100%;
+}
+.option::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:rgba(0,212,255,.04);transition:opacity .18s;
+}
+.option:hover:not(:disabled)::before{opacity:1}
+.option:hover:not(:disabled){border-color:var(--accent);transform:translateX(2px)}
+.option-key{
+  font-family:var(--mono);font-size:.72rem;font-weight:500;
+  color:var(--muted);background:var(--border);
+  width:26px;height:26px;border-radius:6px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .18s;margin-top:1px;
+}
+.option-text{font-size:.92rem;line-height:1.55;color:var(--text)}
+.option:hover:not(:disabled) .option-key{background:rgba(0,212,255,.15);color:var(--accent)}
+
+/* Answer states */
+.option.selected{border-color:var(--accent);background:rgba(0,212,255,.06)}
+.option.selected .option-key{background:var(--accent);color:#000}
+.option.correct{border-color:var(--green)!important;background:rgba(0,229,122,.08)!important}
+.option.correct .option-key{background:var(--green)!important;color:#000!important}
+.option.incorrect{border-color:var(--red)!important;background:rgba(255,77,106,.08)!important}
+.option.incorrect .option-key{background:var(--red)!important;color:#fff!important}
+.option.reveal-correct{border-color:var(--green);background:rgba(0,229,122,.04)}
+.option.reveal-correct .option-key{background:rgba(0,229,122,.2);color:var(--green)}
+.option:disabled{cursor:default;transform:none!important}
+
+/* Explanation */
+.explanation{
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:16px 20px;margin-top:16px;
+  font-size:.85rem;line-height:1.65;color:var(--muted);
+  display:none;animation:fadeIn .3s ease;
+}
+.explanation.visible{display:block}
+.explanation strong{color:var(--text);font-weight:500}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Next button */
+.next-wrap{display:flex;justify-content:flex-end;margin-top:20px}
+.next-btn{
+  background:var(--accent);color:#000;
+  font-family:var(--display);font-size:1.2rem;letter-spacing:.06em;
+  padding:12px 32px;border:none;border-radius:8px;cursor:pointer;
+  transition:all .2s;display:none;
+}
+.next-btn.visible{display:block}
+.next-btn:hover{background:#33ddff;transform:translateX(2px)}
+
+/* Streak */
+.streak-bar{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.7rem;color:var(--muted);
+  margin-bottom:20px;
+}
+.streak-dots{display:flex;gap:5px}
+.s-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--border2);
+  transition:all .3s;
+}
+.s-dot.correct{background:var(--green);box-shadow:0 0 6px rgba(0,229,122,.5)}
+.s-dot.incorrect{background:var(--red)}
+.s-dot.skip{background:var(--muted2)}
+
+/* ══════════ RESULTS ══════════ */
+.results-hero{text-align:center;padding:32px 0 40px}
+.result-grade{
+  font-family:var(--display);font-size:clamp(5rem,18vw,10rem);
+  letter-spacing:.04em;line-height:1;margin-bottom:8px;
+}
+.result-grade.grade-a{color:var(--green)}
+.result-grade.grade-b{color:var(--accent)}
+.result-grade.grade-c{color:var(--medium)}
+.result-grade.grade-d{color:var(--orange)}
+.result-grade.grade-f{color:var(--red)}
+.result-label{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;color:var(--muted);margin-bottom:20px}
+.result-desc{font-size:.95rem;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7}
+
+.result-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin:32px 0;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 14px;text-align:center;
+}
+.stat-val{
+  font-family:var(--display);font-size:2.2rem;letter-spacing:.04em;
+  line-height:1;margin-bottom:4px;
+}
+.stat-label{font-size:.68rem;color:var(--muted);font-family:var(--mono);letter-spacing:.06em}
+
+/* Dimension breakdown */
+.breakdown{margin:32px 0}
+.breakdown h3{
+  font-family:var(--display);font-size:1.4rem;letter-spacing:.04em;
+  margin-bottom:16px;
+}
+.dim-row{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 0;border-bottom:1px solid var(--border);
+}
+.dim-row:last-child{border-bottom:none}
+.dim-name{font-size:.85rem;min-width:200px;color:var(--text)}
+.dim-bar-wrap{flex:1;height:6px;background:var(--surface2);border-radius:999px;overflow:hidden}
+.dim-bar{height:100%;border-radius:999px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.dim-pct{font-family:var(--mono);font-size:.72rem;min-width:36px;text-align:right;color:var(--muted)}
+.dim-tag{
+  font-family:var(--mono);font-size:.62rem;padding:2px 8px;
+  border-radius:999px;min-width:52px;text-align:center;
+}
+.dim-tag.strong{background:rgba(0,229,122,.1);color:var(--green)}
+.dim-tag.ok{background:rgba(0,212,255,.1);color:var(--accent)}
+.dim-tag.weak{background:rgba(255,77,106,.1);color:var(--red)}
+
+.action-row{
+  display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap;
+}
+.btn-primary{
+  background:var(--accent);color:#000;
+  font-family:var(--display);font-size:1.2rem;letter-spacing:.06em;
+  padding:12px 32px;border:none;border-radius:8px;cursor:pointer;transition:all .2s;
+}
+.btn-primary:hover{background:#33ddff}
+.btn-secondary{
+  background:transparent;color:var(--text);
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;
+  padding:12px 24px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;
+  transition:all .2s;
+}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ══════════ LEADERBOARD ══════════ */
+.lb-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;
+}
+.lb-header h2{font-family:var(--display);font-size:2rem;letter-spacing:.04em}
+.lb-meta{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.lb-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.lb-filter{
+  background:transparent;border:1px solid var(--border2);color:var(--muted);
+  padding:6px 14px;border-radius:999px;cursor:pointer;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;
+  transition:all .2s;
+}
+.lb-filter:hover,.lb-filter.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.06)}
+
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table thead tr{border-bottom:1px solid var(--border2)}
+.lb-table th{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;
+}
+.lb-table td{padding:12px;border-bottom:1px solid var(--border);font-size:.88rem}
+.lb-table tbody tr{transition:background .15s}
+.lb-table tbody tr:hover{background:var(--surface2)}
+.lb-table tbody tr.highlight{background:rgba(0,212,255,.06);border-left:2px solid var(--accent)}
+
+.rank-cell{
+  font-family:var(--display);font-size:1.3rem;letter-spacing:.04em;
+  width:48px;text-align:center;
+}
+.rank-1{color:var(--gold)}
+.rank-2{color:var(--silver)}
+.rank-3{color:var(--bronze)}
+.rank-other{color:var(--muted)}
+
+.name-cell .name{font-weight:500;margin-bottom:2px}
+.name-cell .org{font-size:.72rem;color:var(--muted);font-family:var(--mono)}
+.score-cell{
+  font-family:var(--display);font-size:1.5rem;letter-spacing:.04em;
+  color:var(--accent);
+}
+.grade-cell{
+  font-family:var(--mono);font-size:.8rem;
+  padding:3px 10px;border-radius:999px;display:inline-block;
+}
+.grade-cell.A{background:rgba(0,229,122,.1);color:var(--green)}
+.grade-cell.B{background:rgba(0,212,255,.1);color:var(--accent)}
+.grade-cell.C{background:rgba(255,201,64,.1);color:var(--gold)}
+.grade-cell.D{background:rgba(255,140,64,.1);color:var(--orange)}
+.grade-cell.F{background:rgba(255,77,106,.1);color:var(--red)}
+.time-cell{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.diff-cell{font-size:.72rem;color:var(--muted);font-family:var(--mono)}
+
+.your-rank-banner{
+  background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);
+  border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  display:none;
+}
+.your-rank-banner.visible{display:flex}
+.yr-left{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.yr-rank{font-family:var(--display);font-size:2rem;color:var(--accent);letter-spacing:.04em}
+.yr-of{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:2px}
+
+.live-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--green);
+  display:inline-block;margin-right:6px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* ── Correct/Wrong flash ── */
+.flash-overlay{
+  position:fixed;inset:0;z-index:100;pointer-events:none;
+  opacity:0;transition:opacity .15s;
+}
+.flash-overlay.correct{background:rgba(0,229,122,.08)}
+.flash-overlay.incorrect{background:rgba(255,77,106,.08)}
+.flash-overlay.show{opacity:1}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  .result-stats{grid-template-columns:repeat(2,1fr)}
+  .test-specs{grid-template-columns:repeat(3,1fr)}
+  .dim-name{min-width:140px}
+  .hero-title{font-size:3rem}
+}
+</style>
+</head>
+<body>
+<div class="flash-overlay" id="flashOverlay"></div>
+
+<div class="app">
+  <!-- ── Site header ── -->
+  <header class="site-header">
+    <div class="logo">SCM<span>·</span>AI<span>·</span>TEST</div>
+    <div class="header-right">
+      <button class="nav-btn" id="navQuiz" onclick="showScreen('landing')">Take Test</button>
+      <button class="nav-btn" id="navLB" onclick="showScreen('leaderboard')">Leaderboard</button>
+    </div>
+  </header>
+
+  <!-- ══════════ LANDING ══════════ -->
+  <div class="screen active" id="screen-landing">
+    <div class="landing-hero">
+      <div class="hero-tag">AI Literacy Assessment · Supply Chain · US 2025</div>
+      <h1 class="hero-title">HOW AI-<br/><span class="hl">READY</span><br/>ARE YOU?</h1>
+      <p class="hero-sub">A 15-question adaptive assessment measuring AI literacy for supply chain professionals. Questions adjust to your performance in real time.</p>
+    </div>
+
+    <div class="test-specs">
+      <div class="spec-card">
+        <div class="spec-val">15</div>
+        <div class="spec-label">Questions</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-val">12</div>
+        <div class="spec-label">Minutes avg.</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-val">3</div>
+        <div class="spec-label">Skill dimensions</div>
+      </div>
+    </div>
+
+    <div class="register-card">
+      <h3>Begin Assessment</h3>
+      <p>Enter your details to start. Your result will appear on the live leaderboard.</p>
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" id="regName" placeholder="e.g. Jordan Chen" autocomplete="off"/>
+      </div>
+      <div class="field">
+        <label>Organisation</label>
+        <input type="text" id="regOrg" placeholder="e.g. Acme Logistics" autocomplete="off"/>
+      </div>
+      <div class="field">
+        <label>Years in Supply Chain</label>
+        <select id="regExp">
+          <option value="">Select experience level</option>
+          <option value="0-2">0–2 years</option>
+          <option value="3-5">3–5 years</option>
+          <option value="6-10">6–10 years</option>
+          <option value="10+">10+ years</option>
+        </select>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">START ASSESSMENT →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ QUIZ ══════════ -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-topbar">
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="qCounter">Question 1 of 15</span>
+          <span id="qDimLabel">AI Literacy</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+      <div class="score-live">
+        <div class="score-chip">Score: <span id="liveScore">0</span></div>
+        <div class="diff-badge easy" id="diffBadge">Easy</div>
+        <div class="timer-wrap">
+          <div class="timer-ring">
+            <svg width="44" height="44" viewBox="0 0 44 44">
+              <circle cx="22" cy="22" r="18" fill="none" stroke="#1e2530" stroke-width="3"/>
+              <circle id="timerArc" cx="22" cy="22" r="18" fill="none"
+                stroke="#00d4ff" stroke-width="3"
+                stroke-dasharray="113" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="timerNum">45</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Streak -->
+    <div class="streak-bar">
+      <span>History</span>
+      <div class="streak-dots" id="streakDots"></div>
+      <span id="streakMsg"></span>
+    </div>
+
+    <!-- Question -->
+    <div class="question-card" id="questionCard">
+      <div class="q-number" id="qNumber">Q01</div>
+      <div class="q-category" id="qCategory">AI Capabilities</div>
+      <div class="q-scenario" id="qScenario" style="display:none"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="explanation" id="explanation"></div>
+    </div>
+    <div class="next-wrap">
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">NEXT →</button>
+    </div>
+  </div>
+
+  <!-- ══════════ RESULTS ══════════ -->
+  <div class="screen" id="screen-results">
+    <div class="results-hero">
+      <div class="result-grade" id="resultGrade">B+</div>
+      <div class="result-label" id="resultLabel">PROFICIENT</div>
+      <p class="result-desc" id="resultDesc"></p>
+    </div>
+
+    <div class="result-stats">
+      <div class="stat-card">
+        <div class="stat-val" id="rScore" style="color:var(--accent)">0</div>
+        <div class="stat-label">Final Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="rCorrect" style="color:var(--green)">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="rTime" style="color:var(--gold)">0m</div>
+        <div class="stat-label">Time Taken</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="rDiff" style="color:var(--orange)">—</div>
+        <div class="stat-label">Avg. Difficulty</div>
+      </div>
+    </div>
+
+    <div class="breakdown">
+      <h3>Dimension Breakdown</h3>
+      <div id="dimBreakdown"></div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-primary" onclick="showScreen('leaderboard')">VIEW LEADERBOARD →</button>
+      <button class="btn-secondary" onclick="retakeQuiz()">Retake assessment</button>
+    </div>
+  </div>
+
+  <!-- ══════════ LEADERBOARD ══════════ -->
+  <div class="screen" id="screen-leaderboard">
+    <div class="lb-header">
+      <h2>Leaderboard</h2>
+      <div class="lb-meta"><span class="live-dot"></span>Live · <span id="lbCount">0</span> participants</div>
+    </div>
+
+    <div class="your-rank-banner" id="yourRankBanner">
+      <div>
+        <div class="yr-left">Your ranking</div>
+        <div class="yr-rank" id="yourRankNum">—</div>
+        <div class="yr-of" id="yourRankOf">of — participants</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">Your score</div>
+        <div style="font-family:var(--display);font-size:2rem;color:var(--accent)" id="yourScoreDisplay">—</div>
+      </div>
+    </div>
+
+    <div class="lb-filters">
+      <button class="lb-filter active" onclick="filterLB('all',this)">All</button>
+      <button class="lb-filter" onclick="filterLB('A',this)">Grade A</button>
+      <button class="lb-filter" onclick="filterLB('B',this)">Grade B</button>
+      <button class="lb-filter" onclick="filterLB('C',this)">Grade C</button>
+    </div>
+
+    <table class="lb-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Participant</th>
+          <th>Score</th>
+          <th>Grade</th>
+          <th>Time</th>
+          <th>Difficulty</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody"></tbody>
+    </table>
+  </div>
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+// QUESTION BANK
+// 3 difficulties × 3 dimensions × ~5 questions each = 45 questions
+// Dimensions: (1) AI Capabilities & Limitations
+//             (2) AI Output Evaluation
+//             (3) AI Workflow Integration
+// ══════════════════════════════════════════════════════════════════════
+const QUESTIONS = [
+
+  // ── EASY · Capabilities & Limitations ──────────────────────────────
+  {id:'e1',diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'Which of the following tasks is a Large Language Model (LLM) such as ChatGPT or Claude BEST suited to help a supply chain manager with?',
+   options:['Automatically executing a purchase order in SAP without human review','Drafting a professional email to a supplier requesting a delivery update','Providing legally guaranteed contract interpretation','Precisely predicting next month\'s demand with 100% accuracy'],
+   correct:1,
+   explanation:'<strong>Drafting communications</strong> is a core LLM strength — synthesising context, tone, and structure into polished text. LLMs cannot reliably execute transactions, provide legal guarantees, or guarantee predictive accuracy.'},
+
+  {id:'e2',diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'A supply chain analyst tells you: "The AI tool gave me a very confident-sounding answer about our supplier\'s financial stability." What should you remember about LLM outputs?',
+   options:['Confident language in an LLM output reliably signals factual accuracy','LLMs can generate plausible-sounding but incorrect information (hallucination)','LLMs always flag when they are uncertain','LLM outputs are verified against real-time financial databases by default'],
+   correct:1,
+   explanation:'<strong>Hallucination</strong> is a well-documented LLM behaviour — the model can produce confident, fluent text that is factually wrong. Confident tone does not correlate with accuracy. Always verify high-stakes claims from an independent source.'},
+
+  {id:'e3',diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'You want to use an AI assistant to help summarise 200 supplier contracts. What is the most important limitation to be aware of?',
+   options:['AI cannot process text documents at all','The AI may miss or misstate key clauses, requiring human spot-checking','AI tools are only useful for documents under 10 pages','Summarisation will always take longer than reading manually'],
+   correct:1,
+   explanation:'AI summarisation can miss nuance, misstate terms, or omit critical clauses. <strong>Human spot-checking</strong> of a representative sample — especially for high-stakes contracts — is essential before acting on AI-generated summaries.'},
+
+  {id:'e4',diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'Which statement about AI training data is most accurate?',
+   options:['AI models have access to real-time internet data unless told otherwise','Most LLMs have a knowledge cutoff date and may lack recent information','AI models are updated daily with current market data','AI tools always disclose when their information is outdated'],
+   correct:1,
+   explanation:'Most LLMs are trained on a dataset with a <strong>knowledge cutoff</strong> — they do not automatically know about recent events, regulatory changes, or new suppliers. For supply chain decisions requiring current data, always supplement AI with up-to-date sources.'},
+
+  {id:'e5',diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'An AI tool claims it can optimise your entire supply chain autonomously. What is the most appropriate response?',
+   options:['Immediately implement it — AI optimisation is always superior to human planning','Ask for a pilot on a low-risk subset and evaluate results before wider rollout','Reject it entirely — AI has no role in supply chain optimisation','Trust it fully for strategic decisions but not operational ones'],
+   correct:1,
+   explanation:'A <strong>controlled pilot</strong> is the correct approach. AI tools can provide genuine optimisation value, but autonomous claims should be validated in a bounded, reversible context before enterprise-wide deployment.'},
+
+  // ── EASY · AI Output Evaluation ────────────────────────────────────
+  {id:'e6',diff:'easy',dim:'AI Output Evaluation',points:10,timeLimit:45,
+   scenario:'An AI assistant produces a demand forecast showing a 34% uplift for Q3 based on "historical patterns."',
+   text:'What is the FIRST thing you should check before presenting this forecast?',
+   options:['Whether the number sounds reasonable compared to your own experience','Whether the AI used the correct dataset and time range','The font and layout of the output document','Whether the AI is the latest model version'],
+   correct:1,
+   explanation:'<strong>Data provenance</strong> is the first check — if the AI used incomplete, stale, or incorrect input data, the output is unreliable regardless of how sophisticated the model is. Always ask: what data did this come from?'},
+
+  {id:'e7',diff:'easy',dim:'AI Output Evaluation',points:10,timeLimit:45,
+   scenario:'',
+   text:'You ask an AI to list the top 5 logistics software vendors. It provides a confident list with brief descriptions. What should you do before sharing this list with your team?',
+   options:['Share it immediately — the AI has access to comprehensive vendor data','Cross-reference the list against current industry sources to verify accuracy and completeness','Ask the AI to rewrite the list in a different format','Check the list only if it was generated more than a week ago'],
+   correct:1,
+   explanation:'<strong>Verification against independent sources</strong> is essential. AI vendor lists may be outdated, incomplete, or biased toward well-known names — missing newer or more relevant options for your specific context.'},
+
+  {id:'e8',diff:'easy',dim:'AI Output Evaluation',points:10,timeLimit:45,
+   scenario:'',
+   text:'Which of the following is the most reliable signal that an AI output needs further verification?',
+   options:['The output is longer than one paragraph','The output contains specific numerical claims (prices, dates, percentages)','The output uses technical terminology','The output was generated quickly'],
+   correct:1,
+   explanation:'<strong>Specific numerical claims</strong> are highest risk — AI models can fabricate plausible-looking figures, percentages, and dates. Any number that will influence a business decision must be independently verified.'},
+
+  // ── EASY · AI Workflow Integration ─────────────────────────────────
+  {id:'e9',diff:'easy',dim:'AI Workflow Integration',points:10,timeLimit:45,
+   scenario:'',
+   text:'Which supply chain task represents the LOWEST risk if AI-generated output is used without thorough verification?',
+   options:['Finalising a multi-million dollar supplier contract','Generating a first draft of meeting agenda for a team standup','Calculating reorder quantities for critical medical supplies','Assessing legal compliance of a new trade route'],
+   correct:1,
+   explanation:'A <strong>meeting agenda draft</strong> is low-stakes and easily corrected — the consequences of an error are minimal. High-stakes tasks (contracts, compliance, critical inventory) always require careful human verification of AI outputs.'},
+
+  {id:'e10',diff:'easy',dim:'AI Workflow Integration',points:10,timeLimit:45,
+   scenario:'',
+   text:'A colleague proposes using an AI chatbot to handle all supplier communications without human oversight. What is the main risk?',
+   options:['The AI may respond too quickly for suppliers','AI-generated communications may contain errors, inappropriate tone, or legally problematic commitments','Suppliers will be unable to tell they are speaking with an AI','The AI will charge per message sent'],
+   correct:1,
+   explanation:'<strong>Errors, tone mismatches, and unintended commitments</strong> are the core risks. Without oversight, an AI might agree to terms, disclose sensitive information, or communicate in a way that damages supplier relationships or creates legal exposure.'},
+
+  // ── MEDIUM · Capabilities & Limitations ────────────────────────────
+  {id:'m1',diff:'medium',dim:'AI Capabilities & Limitations',points:20,timeLimit:40,
+   scenario:'Your company uses an AI demand forecasting tool integrated with SAP. The tool has shown 88% accuracy on historical validation data.',
+   text:'Which factor most significantly limits the reliability of this tool for next quarter\'s forecast?',
+   options:['88% accuracy is too low for any business application','The tool cannot handle data from SAP systems','A sudden geopolitical disruption or demand shock (out-of-distribution event) will not be reflected in historical patterns','The tool requires retraining every week to remain useful'],
+   correct:2,
+   explanation:'<strong>Distribution shift</strong> is the critical limitation — AI models trained on historical data perform poorly when conditions change dramatically (new disruptions, market shifts, black swan events). 88% historical accuracy does not guarantee future accuracy under novel conditions.'},
+
+  {id:'m2',diff:'medium',dim:'AI Capabilities & Limitations',points:20,timeLimit:40,
+   scenario:'',
+   text:'You are evaluating two AI tools for supplier risk assessment. Tool A uses a large pre-trained language model. Tool B uses a specialised model trained on 10 years of your company\'s supplier data. For assessing YOUR suppliers, which is generally more reliable and why?',
+   options:['Tool A, because larger models are always more accurate','Tool B, because domain-specific training on relevant historical data typically yields better performance for that specific context','Tool A, because pre-trained models have seen more data overall','Neither — AI tools are not suitable for supplier risk assessment'],
+   correct:1,
+   explanation:'<strong>Domain-specific training</strong> on relevant, high-quality data typically outperforms general-purpose models for specialised tasks. A model trained on your supplier data understands your specific risk patterns, industry, and business context — context that a general LLM may lack.'},
+
+  {id:'m3',diff:'medium',dim:'AI Capabilities & Limitations',points:20,timeLimit:40,
+   scenario:'An AI tool flags a supplier as "high risk" based on news sentiment analysis.',
+   text:'What is the most significant limitation of this AI risk flag that you should communicate to your team?',
+   options:['News sentiment analysis is always more accurate than financial data','The AI may be picking up irrelevant news or missing context that a human analyst would recognise as immaterial','The flag should be acted upon immediately without further investigation','AI cannot process news data reliably'],
+   correct:1,
+   explanation:'<strong>Context blindness</strong> is a key AI limitation in sentiment analysis — the model may flag a supplier based on negative news that is actually irrelevant to their supply reliability (e.g. a PR controversy unrelated to operations). Human judgment is required to contextualise AI risk flags.'},
+
+  {id:'m4',diff:'medium',dim:'AI Capabilities & Limitations',points:20,timeLimit:40,
+   scenario:'',
+   text:'Which of the following describes the concept of "prompt injection" that supply chain teams using AI tools should be aware of?',
+   options:['A technique to improve the speed of AI responses','A cyberattack where malicious instructions hidden in content (e.g. a supplier document) manipulate an AI agent\'s behaviour','A method for injecting real-time data into AI forecasting models','The process of training an AI model with new supply chain data'],
+   correct:1,
+   explanation:'<strong>Prompt injection</strong> is a real security risk for agentic AI systems — a malicious actor could embed instructions in a supplier document or email that cause an AI agent to take unintended actions (e.g. disclosing data, modifying orders). Supply chain teams using AI agents must validate inputs from external sources.'},
+
+  {id:'m5',diff:'medium',dim:'AI Capabilities & Limitations',points:20,timeLimit:40,
+   scenario:'',
+   text:'Your procurement team wants to use an LLM to analyse confidential supplier pricing data. What is the primary data governance concern?',
+   options:['LLMs will refuse to analyse pricing data','Confidential data submitted to external AI APIs may be used for model training or exposed to third parties, depending on the provider\'s terms','LLMs cannot process numerical data accurately','The analysis will take too long for commercial use'],
+   correct:1,
+   explanation:'<strong>Data privacy and governance</strong> is the key concern. Many commercial AI APIs may log inputs for safety monitoring or model improvement. Confidential supplier pricing data submitted externally could violate NDAs or expose competitive information. Always review provider data handling terms before submitting sensitive data.'},
+
+  // ── MEDIUM · AI Output Evaluation ──────────────────────────────────
+  {id:'m6',diff:'medium',dim:'AI Output Evaluation',points:20,timeLimit:40,
+   scenario:'An AI tool generates a procurement risk report stating: "Supplier X has a 73% probability of delivery delay in Q4 based on current market conditions."',
+   text:'What is the most important question to ask before including this figure in an executive briefing?',
+   options:['Is 73% above or below the industry average?','What methodology and data sources underlie this probability estimate, and how was it validated?','Should the figure be rounded to 75% for clarity?','Is the supplier aware of this assessment?'],
+   correct:1,
+   explanation:'A precise probability figure implies a quantitative model with specific inputs and validation. Before presenting it, you must understand <strong>how it was calculated</strong>. An AI-generated probability without a clear methodology is potentially misleading — executives may over-trust precise-looking numbers.'},
+
+  {id:'m7',diff:'medium',dim:'AI Output Evaluation',points:20,timeLimit:40,
+   scenario:'You ask an AI to compare two logistics providers. It strongly recommends Provider A.',
+   text:'Which factor in the AI\'s training or design could introduce systematic bias into this recommendation?',
+   options:['Provider A has a longer company name','The AI\'s training data may over-represent well-known or frequently-mentioned providers, favouring established names over newer competitors','The AI prefers alphabetically earlier options','The comparison was done too quickly'],
+   correct:1,
+   explanation:'<strong>Representation bias in training data</strong> is a real issue — providers with more online presence, press coverage, and documentation will appear more prominently in AI training data, making the model more likely to recommend them regardless of actual suitability for your context.'},
+
+  {id:'m8',diff:'medium',dim:'AI Output Evaluation',points:20,timeLimit:40,
+   scenario:'',
+   text:'You notice that an AI-generated supplier evaluation report reaches the same conclusion regardless of whether you provide positive or negative input data about the supplier. What does this most likely indicate?',
+   options:['The AI is working correctly — suppliers rarely change risk profile','The AI model may be anchored to its training data and not properly weighting your specific inputs','You should submit the data in a different file format','The evaluation criteria need to be simplified'],
+   correct:1,
+   explanation:'This is a sign of <strong>insufficient sensitivity to inputs</strong> — a problematic model behaviour where outputs are dominated by training priors rather than the specific data you provide. A reliable AI evaluation tool should produce meaningfully different outputs when given materially different input data.'},
+
+  // ── MEDIUM · AI Workflow Integration ───────────────────────────────
+  {id:'m9',diff:'medium',dim:'AI Workflow Integration',points:20,timeLimit:40,
+   scenario:'Your company is implementing an AI-powered supplier communication tool that will draft and send routine status request emails automatically.',
+   text:'Which governance control is MOST important to implement first?',
+   options:['Ensure the AI uses formal English grammar','Establish a human review checkpoint for any email involving non-standard situations, disputes, or financial terms','Set a maximum email length of 200 words','Train the AI on competitor communication styles'],
+   correct:1,
+   explanation:'A <strong>human review checkpoint for non-routine situations</strong> is the critical first control. Routine emails (standard status requests) can be automated safely; but emails involving disputes, financial implications, or unusual circumstances carry significant risk if sent without human oversight.'},
+
+  {id:'m10',diff:'medium',dim:'AI Workflow Integration',points:20,timeLimit:40,
+   scenario:'',
+   text:'Which of the following represents the most effective use of AI to enhance a supply chain manager\'s verbal communication skills?',
+   options:['Replacing all verbal communication with AI-generated text messages','Using AI to prepare briefing notes, anticipate questions, and draft talking points before a key supplier negotiation','Having AI conduct the negotiation call autonomously','Using AI to transcribe calls and file them without review'],
+   correct:1,
+   explanation:'AI as a <strong>preparation and augmentation tool</strong> is the optimal use case — it enhances the human\'s effectiveness by helping them enter conversations better prepared, with stronger arguments and anticipating objections. The human remains the communicator; AI is the research and drafting assistant.'},
+
+  // ── HARD · Capabilities & Limitations ──────────────────────────────
+  {id:'h1',diff:'hard',dim:'AI Capabilities & Limitations',points:30,timeLimit:35,
+   scenario:'Your company\'s AI demand forecasting model achieves 91% accuracy during a stable period. After a major port disruption, accuracy drops to 54%.',
+   text:'Which technical concept best explains this performance degradation, and what is the appropriate operational response?',
+   options:['Model overfitting — retrain the model on the disruption data immediately','Covariate shift / distribution shift — the model\'s input data distribution no longer matches training conditions; increase human override authority and weight expert judgment until the model is retrained on post-disruption data','Data leakage — the model was accidentally trained on future data','Underfitting — the model needs more parameters'],
+   correct:1,
+   explanation:'<strong>Distribution shift</strong> (inputs diverging from training distribution) is the correct diagnosis. During novel disruptions, AI model assumptions break down. The response is to: (1) increase human expert weighting, (2) flag AI outputs as lower-confidence, (3) collect disruption-period data to retrain, and (4) restore automated reliance only after validated performance recovery.'},
+
+  {id:'h2',diff:'hard',dim:'AI Capabilities & Limitations',points:30,timeLimit:35,
+   scenario:'',
+   text:'A vendor claims their AI tool provides "explainable AI (XAI)" for procurement decisions. Which response best evaluates this claim?',
+   options:['XAI is a marketing term with no technical substance — ignore it','Ask whether explanations are generated post-hoc (approximations) or are architecturally intrinsic, and whether they have been validated for faithfulness to the model\'s actual decision process','Accept the claim — any AI that gives reasons is explainable','Require the tool to explain decisions in legal language before purchase'],
+   correct:1,
+   explanation:'<strong>XAI quality varies significantly</strong>. Post-hoc explanation methods (like LIME or SHAP) approximate the model\'s reasoning but may not accurately reflect the actual decision process. Intrinsic interpretability (e.g. decision trees, linear models) is architecturally transparent. For high-stakes procurement, understanding which type is being offered — and whether explanations are validated — is essential.'},
+
+  {id:'h3',diff:'hard',dim:'AI Capabilities & Limitations',points:30,timeLimit:35,
+   scenario:'Your AI sourcing tool recommends significantly reducing orders from a minority-owned supplier despite their strong performance record.',
+   text:'What underlying AI issue does this most likely illustrate, and what action should you take?',
+   options:['The AI is correctly optimising for cost — proceed with the recommendation','Potential algorithmic bias from underrepresentation in training data; conduct a bias audit before acting, and evaluate the recommendation against objective performance metrics','The supplier\'s performance record is unreliable — trust the AI','This is a data entry error in the supplier record'],
+   correct:1,
+   explanation:'<strong>Algorithmic bias</strong> can emerge when training data underrepresents certain supplier categories, causing the model to systematically undervalue them. Responsible AI use requires bias auditing, especially when recommendations affect historically underrepresented groups. Always reconcile AI recommendations against objective, auditable performance data.'},
+
+  // ── HARD · AI Output Evaluation ────────────────────────────────────
+  {id:'h4',diff:'hard',dim:'AI Output Evaluation',points:30,timeLimit:35,
+   scenario:'An AI model generates a quarterly supply chain risk report. You notice that the confidence intervals on all predictions are extremely narrow (±1-2%).',
+   text:'What does this most likely signal about the model\'s outputs?',
+   options:['The model is highly accurate and confidence intervals reflect genuine certainty','Overconfident calibration — the model is likely underestimating uncertainty, possibly due to training on insufficient variance in historical data; real-world supply chain variability should produce wider intervals','The predictions are so accurate they need no further review','Narrow confidence intervals indicate a deterministic (non-probabilistic) model'],
+   correct:1,
+   explanation:'<strong>Overconfident calibration</strong> is a significant red flag. Supply chain environments have substantial inherent uncertainty; a model claiming ±1-2% precision across all predictions is almost certainly miscalibrated. Well-calibrated probabilistic models should produce confidence intervals that reflect actual uncertainty — narrow intervals in a volatile domain should trigger deeper scrutiny.'},
+
+  {id:'h5',diff:'hard',dim:'AI Output Evaluation',points:30,timeLimit:35,
+   scenario:'You are evaluating an AI tool that scored 94% accuracy on its published benchmark. Your pilot test shows 71% accuracy on your actual data.',
+   text:'Which explanation is MOST likely and what does it imply for procurement of the tool?',
+   options:['Your data is lower quality — clean your data and re-test','Benchmark overfitting or data leakage in the vendor\'s evaluation, or significant domain mismatch between benchmark and your operational context; the pilot result is more reliable for your use case — negotiate SLA around observed performance, not benchmark claims','The tool needs six months to "learn" your data before reaching benchmark accuracy','The benchmark was conducted on a different version of the tool'],
+   correct:1,
+   explanation:'<strong>Benchmark overfitting and domain mismatch</strong> are common causes of this gap. Vendors may optimise for public benchmark datasets that don\'t represent your operational conditions. The pilot test on your actual data is the most reliable signal. Any SLAs, pricing, or deployment decisions should be anchored to observed pilot performance, and you should require the vendor to explain the benchmark methodology.'},
+
+  // ── HARD · AI Workflow Integration ─────────────────────────────────
+  {id:'h6',diff:'hard',dim:'AI Workflow Integration',points:30,timeLimit:35,
+   scenario:'Your company is deploying an AI agent that can autonomously place purchase orders up to $50,000 based on inventory signals.',
+   text:'Beyond standard cybersecurity controls, which AI-specific risk requires a dedicated governance policy?',
+   options:['The risk that the AI agent will place orders too slowly','Prompt injection via supplier-provided content (e.g. malicious instructions embedded in an invoice or product description) causing the agent to place unauthorised orders','The risk that the AI prefers certain currencies','The risk that the AI will communicate with competitors'],
+   correct:1,
+   explanation:'<strong>Prompt injection in agentic systems</strong> is a novel AI-specific risk distinct from traditional cybersecurity threats. When an AI agent processes external content (invoices, emails, product catalogues), malicious actors may embed hidden instructions that override the agent\'s intended behaviour. Governance should include: sandboxed content processing, human approval thresholds, and audit logs of all agent-initiated actions.'},
+
+  {id:'h7',diff:'hard',dim:'AI Workflow Integration',points:30,timeLimit:35,
+   scenario:'Your organisation\'s supply chain team has used an AI forecasting tool for 18 months. You notice analysts have stopped questioning its outputs and present AI-generated forecasts to leadership without independent review.',
+   text:'What phenomenon does this illustrate, and what structural intervention would most effectively address it?',
+   options:['Efficient automation — the team has correctly learned to trust a validated tool','Automation bias — over-reliance on AI outputs, reducing human critical evaluation; structural interventions include mandatory exception reporting, periodic "AI-off" exercises where analysts produce independent forecasts, and rotating devil\'s advocate roles in forecast review meetings','Model drift — the AI tool needs retraining','Confirmation bias — analysts are selecting data that matches AI outputs'],
+   correct:1,
+   explanation:'<strong>Automation bias</strong> is well-documented in human-AI teaming research — humans systematically over-rely on automated outputs, especially when the system has been reliable historically. Structural interventions matter more than training alone: forcing independent human estimates, conducting periodic AI-free exercises, and institutionalising challenge roles all help maintain critical human oversight capacity.'},
+
+  {id:'h8',diff:'hard',dim:'AI Workflow Integration',points:30,timeLimit:35,
+   scenario:'',
+   text:'You are designing an AI-assisted supplier negotiation preparation system. Which design principle BEST balances AI capability with appropriate human control?',
+   options:['Full automation — let AI conduct all pre-negotiation analysis and generate final strategy documents without human input to maximise speed','Human-in-the-loop for strategy; AI-in-the-loop for research — AI autonomously gathers intelligence and drafts options, but a human negotiator reviews, selects, and modifies the strategy before any external communication','Human oversight only for contracts above $1M; full AI autonomy below that threshold','AI generates the strategy; humans implement it exactly as specified to maintain consistency'],
+   correct:1,
+   explanation:'<strong>Human-in-the-loop for strategy decisions</strong> is the optimal design principle for high-stakes negotiation contexts. AI excels at research, pattern-matching across past negotiations, and generating option sets — tasks where breadth and speed matter. Humans add irreplaceable value in strategic judgment, relationship calibration, and ethical considerations. The boundary should be: AI for research and options generation, human for strategy selection and all external communication.'},
+];
+
+// ══════════════════════════════════════════════════════════════════════
+// ADAPTIVE LOGIC
+// ══════════════════════════════════════════════════════════════════════
+const TOTAL_QUESTIONS = 15;
+const TIME_LIMIT_SEC  = 15 * 60; // 15 minutes total budget
+
+// Adaptive thresholds
+const PROMOTE_STREAK  = 2;  // consecutive correct → move up difficulty
+const DEMOTE_STREAK   = 2;  // consecutive incorrect → move down difficulty
+
+// ══════════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════════
+let state = {
+  player: { name:'', org:'', exp:'' },
+  currentDiff: 'easy',
+  questionsAnswered: [],
+  usedIds: new Set(),
+  currentQ: null,
+  selectedOption: null,
+  answered: false,
+  score: 0,
+  correctCount: 0,
+  consecutiveCorrect: 0,
+  consecutiveIncorrect: 0,
+  history: [],      // [{correct, diff, dim}]
+  startTime: null,
+  questionStartTime: null,
+  totalElapsed: 0,
+  qTimer: null,
+  totalTimer: null,
+  dimScores: {
+    'AI Capabilities & Limitations': {correct:0,total:0},
+    'AI Output Evaluation':          {correct:0,total:0},
+    'AI Workflow Integration':       {correct:0,total:0},
+  },
+  yourEntry: null,
+  lbFilter: 'all',
+};
+
+// ══════════════════════════════════════════════════════════════════════
+// LEADERBOARD STORAGE (localStorage-backed)
+// ══════════════════════════════════════════════════════════════════════
+function loadLB() {
+  try { return JSON.parse(localStorage.getItem('scm_lb') || '[]'); }
+  catch{ return []; }
+}
+function saveLB(data) {
+  localStorage.setItem('scm_lb', JSON.stringify(data));
+}
+function addToLB(entry) {
+  const lb = loadLB();
+  lb.push(entry);
+  lb.sort((a,b) => b.score - a.score);
+  saveLB(lb);
+  return lb;
+}
+
+// Seed leaderboard with demo entries if empty
+function seedLB() {
+  if (loadLB().length > 0) return;
+  const demos = [
+    {name:'Alex Rivera',   org:'Apex Logistics',      score:340, correct:14, grade:'A', time:'11:24', avgDiff:'Hard',   ts: Date.now()-3600000},
+    {name:'Sam Okafor',    org:'GlobalTrade Inc.',    score:295, correct:12, grade:'A', time:'13:05', avgDiff:'Hard',   ts: Date.now()-7200000},
+    {name:'Lin Wei',       org:'Pacific Supply Co.',  score:260, correct:11, grade:'B', time:'12:40', avgDiff:'Medium', ts: Date.now()-10000000},
+    {name:'Jordan Hayes',  org:'MidWest Freight',     score:220, correct:10, grade:'B', time:'14:12', avgDiff:'Medium', ts: Date.now()-14000000},
+    {name:'Dana Müller',   org:'Euro SCM GmbH',       score:185, correct: 9, grade:'B', time:'13:55', avgDiff:'Medium', ts: Date.now()-18000000},
+    {name:'Casey Kim',     org:'Seoul Sourcing Ltd.',  score:150, correct: 8, grade:'C', time:'11:30', avgDiff:'Easy',   ts: Date.now()-22000000},
+    {name:'Morgan Patel',  org:'Tri-State Warehousing',score:120,correct: 7, grade:'C', time:'14:50', avgDiff:'Easy',   ts: Date.now()-26000000},
+  ];
+  saveLB(demos);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ══════════════════════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  if (name === 'leaderboard') renderLB();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// START QUIZ
+// ══════════════════════════════════════════════════════════════════════
+function startQuiz() {
+  const name = document.getElementById('regName').value.trim();
+  const org  = document.getElementById('regOrg').value.trim();
+  const exp  = document.getElementById('regExp').value;
+  if (!name || !org || !exp) {
+    alert('Please fill in all fields before starting.');
+    return;
+  }
+  state.player = {name, org, exp};
+  state.usedIds = new Set();
+  state.questionsAnswered = [];
+  state.score = 0;
+  state.correctCount = 0;
+  state.consecutiveCorrect = 0;
+  state.consecutiveIncorrect = 0;
+  state.history = [];
+  state.currentDiff = 'easy';
+  state.dimScores = {
+    'AI Capabilities & Limitations': {correct:0,total:0},
+    'AI Output Evaluation':          {correct:0,total:0},
+    'AI Workflow Integration':       {correct:0,total:0},
+  };
+  state.startTime = Date.now();
+  state.yourEntry = null;
+
+  // Init streak dots
+  const dots = document.getElementById('streakDots');
+  dots.innerHTML = '';
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const d = document.createElement('div');
+    d.className = 's-dot';
+    d.id = 'dot-'+i;
+    dots.appendChild(d);
+  }
+
+  showScreen('quiz');
+  loadNextQuestion();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ADAPTIVE QUESTION SELECTION
+// ══════════════════════════════════════════════════════════════════════
+function selectQuestion() {
+  const qNum = state.questionsAnswered.length;
+
+  // Ensure each dimension is represented at least once in first 9 questions
+  const dims = Object.keys(state.dimScores);
+  const dimCounts = {};
+  dims.forEach(d => dimCounts[d] = 0);
+  state.history.forEach(h => { if(dimCounts[h.dim]!==undefined) dimCounts[h.dim]++; });
+
+  // Find underrepresented dimension if still in first 9
+  let targetDim = null;
+  if (qNum < 9) {
+    const sorted = dims.sort((a,b) => dimCounts[a] - dimCounts[b]);
+    if (dimCounts[sorted[0]] < Math.floor((qNum+1)/3)) targetDim = sorted[0];
+  }
+
+  // Candidate questions
+  let pool = QUESTIONS.filter(q =>
+    q.diff === state.currentDiff &&
+    !state.usedIds.has(q.id) &&
+    (!targetDim || q.dim === targetDim)
+  );
+
+  // If no match for dim+diff, relax dim constraint
+  if (pool.length === 0) {
+    pool = QUESTIONS.filter(q =>
+      q.diff === state.currentDiff && !state.usedIds.has(q.id)
+    );
+  }
+
+  // If still empty, relax difficulty
+  if (pool.length === 0) {
+    pool = QUESTIONS.filter(q => !state.usedIds.has(q.id));
+  }
+
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function adjustDifficulty(wasCorrect) {
+  if (wasCorrect) {
+    state.consecutiveCorrect++;
+    state.consecutiveIncorrect = 0;
+    if (state.consecutiveCorrect >= PROMOTE_STREAK) {
+      if (state.currentDiff === 'easy')   state.currentDiff = 'medium';
+      else if (state.currentDiff === 'medium') state.currentDiff = 'hard';
+      state.consecutiveCorrect = 0;
+    }
+  } else {
+    state.consecutiveIncorrect++;
+    state.consecutiveCorrect = 0;
+    if (state.consecutiveIncorrect >= DEMOTE_STREAK) {
+      if (state.currentDiff === 'hard')   state.currentDiff = 'medium';
+      else if (state.currentDiff === 'medium') state.currentDiff = 'easy';
+      state.consecutiveIncorrect = 0;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// LOAD QUESTION
+// ══════════════════════════════════════════════════════════════════════
+function loadNextQuestion() {
+  clearInterval(state.qTimer);
+
+  if (state.questionsAnswered.length >= TOTAL_QUESTIONS) {
+    endQuiz();
+    return;
+  }
+
+  const q = selectQuestion();
+  if (!q) { endQuiz(); return; }
+
+  state.currentQ = q;
+  state.selectedOption = null;
+  state.answered = false;
+  state.usedIds.add(q.id);
+  state.questionStartTime = Date.now();
+
+  const qNum = state.questionsAnswered.length + 1;
+
+  // Progress
+  document.getElementById('progressFill').style.width = ((qNum-1)/TOTAL_QUESTIONS*100)+'%';
+  document.getElementById('qCounter').textContent = `Question ${qNum} of ${TOTAL_QUESTIONS}`;
+  document.getElementById('qDimLabel').textContent = q.dim;
+  document.getElementById('liveScore').textContent = state.score;
+  document.getElementById('qNumber').textContent = 'Q'+String(qNum).padStart(2,'0');
+  document.getElementById('qCategory').textContent = q.dim;
+
+  // Difficulty badge
+  const badge = document.getElementById('diffBadge');
+  badge.textContent = q.diff.charAt(0).toUpperCase()+q.diff.slice(1);
+  badge.className = 'diff-badge '+q.diff;
+
+  // Scenario
+  const sc = document.getElementById('qScenario');
+  if (q.scenario) { sc.style.display='block'; sc.textContent=q.scenario; }
+  else { sc.style.display='none'; }
+
+  document.getElementById('qText').textContent = q.text;
+
+  // Options
+  const cont = document.getElementById('optionsContainer');
+  cont.innerHTML = '';
+  const keys = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-key">${keys[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectOption(i, btn);
+    cont.appendChild(btn);
+  });
+
+  // Explanation
+  const exp = document.getElementById('explanation');
+  exp.className = 'explanation';
+  exp.innerHTML = '';
+
+  // Next btn
+  document.getElementById('nextBtn').className = 'next-btn';
+
+  // Animate card
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  requestAnimationFrame(() => { card.style.animation = ''; });
+
+  // Timer
+  startQuestionTimer(q.timeLimit);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════════════════════════════
+function startQuestionTimer(seconds) {
+  let remaining = seconds;
+  const arc = document.getElementById('timerArc');
+  const num = document.getElementById('timerNum');
+  const circum = 113;
+
+  function tick() {
+    const pct = remaining / seconds;
+    arc.style.strokeDashoffset = circum * (1 - pct);
+    arc.style.stroke = remaining <= 10 ? '#ff4d6a' : (remaining <= 20 ? '#ffc940' : '#00d4ff');
+    num.textContent = remaining;
+    num.className = 'timer-num' + (remaining <= 10 ? ' warning' : '');
+    if (remaining <= 0) {
+      clearInterval(state.qTimer);
+      if (!state.answered) timeExpired();
+      return;
+    }
+    remaining--;
+  }
+  tick();
+  state.qTimer = setInterval(tick, 1000);
+}
+
+function timeExpired() {
+  // Auto-submit as wrong
+  submitAnswer(-1);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ANSWER HANDLING
+// ══════════════════════════════════════════════════════════════════════
+function selectOption(index, btn) {
+  if (state.answered) return;
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.selectedOption = index;
+  submitAnswer(index);
+}
+
+function submitAnswer(index) {
+  if (state.answered) return;
+  state.answered = true;
+  clearInterval(state.qTimer);
+
+  const q = state.currentQ;
+  const correct = index === q.correct;
+  const qNum = state.questionsAnswered.length;
+
+  // Update dim scores
+  state.dimScores[q.dim].total++;
+  if (correct) {
+    state.score += q.points;
+    state.correctCount++;
+    state.dimScores[q.dim].correct++;
+  }
+
+  // Adjust difficulty for next question
+  adjustDifficulty(correct);
+
+  // Record history
+  state.history.push({ correct, diff: q.diff, dim: q.dim });
+  state.questionsAnswered.push({ id: q.id, correct, diff: q.diff });
+
+  // Update streak dot
+  const dot = document.getElementById('dot-'+qNum);
+  if (dot) dot.className = 's-dot ' + (index === -1 ? 'skip' : correct ? 'correct' : 'incorrect');
+
+  // Flash
+  const flash = document.getElementById('flashOverlay');
+  flash.className = 'flash-overlay ' + (correct ? 'correct' : 'incorrect') + ' show';
+  setTimeout(() => flash.className = 'flash-overlay', 400);
+
+  // Highlight options
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((o,i) => {
+    o.disabled = true;
+    if (i === q.correct) o.classList.add('reveal-correct');
+    if (i === index && !correct) o.classList.add('incorrect');
+    if (i === index && correct) { o.classList.remove('reveal-correct'); o.classList.add('correct'); }
+  });
+
+  // Show explanation
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (correct ? '✓ Correct. ' : '✗ Incorrect. ') + q.explanation;
+  exp.className = 'explanation visible';
+  exp.style.borderColor = correct ? 'rgba(0,229,122,.2)' : 'rgba(255,77,106,.2)';
+  exp.style.color = correct ? '#8ae6c0' : '#f0a0b0';
+
+  // Live score
+  document.getElementById('liveScore').textContent = state.score;
+
+  // Streak message
+  const streak = state.history.filter(h => h.correct).length;
+  const consec = (() => {
+    let c = 0;
+    for (let i = state.history.length-1; i >= 0; i--) {
+      if (state.history[i].correct) c++; else break;
+    }
+    return c;
+  })();
+  if (consec >= 3) document.getElementById('streakMsg').textContent = `🔥 ${consec}-question streak!`;
+  else document.getElementById('streakMsg').textContent = '';
+
+  // Show next button
+  const isLast = state.questionsAnswered.length >= TOTAL_QUESTIONS;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.className = 'next-btn visible';
+  nextBtn.textContent = isLast ? 'SEE RESULTS →' : 'NEXT →';
+}
+
+function nextQuestion() {
+  if (state.questionsAnswered.length >= TOTAL_QUESTIONS) {
+    endQuiz();
+  } else {
+    loadNextQuestion();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// END QUIZ
+// ══════════════════════════════════════════════════════════════════════
+function endQuiz() {
+  clearInterval(state.qTimer);
+  const elapsed = Math.round((Date.now() - state.startTime) / 1000);
+  const mins = Math.floor(elapsed/60);
+  const secs = elapsed % 60;
+
+  // Grade
+  const maxScore = QUESTIONS.filter((_,i)=>i<TOTAL_QUESTIONS).reduce((acc,q)=>acc,0);
+  const pct = state.score / (TOTAL_QUESTIONS * 20) * 100; // rough normalisation
+  let grade, gradeClass, label, desc;
+
+  if (pct >= 85) {
+    grade='A'; gradeClass='grade-a'; label='ADVANCED';
+    desc='Exceptional AI literacy. You demonstrate a sophisticated understanding of AI capabilities, limitations, and governance in supply chain contexts.';
+  } else if (pct >= 70) {
+    grade='B'; gradeClass='grade-b'; label='PROFICIENT';
+    desc='Strong AI literacy with good practical judgment. Some advanced topics around bias, calibration, and agentic AI warrant further development.';
+  } else if (pct >= 55) {
+    grade='C'; gradeClass='grade-c'; label='DEVELOPING';
+    desc='Foundational AI literacy is present. Focused training on output evaluation and AI governance would significantly strengthen your capabilities.';
+  } else if (pct >= 40) {
+    grade='D'; gradeClass='grade-d'; label='BEGINNER';
+    desc='Core AI concepts require further study. A structured AI literacy programme tailored to supply chain professionals is recommended.';
+  } else {
+    grade='F'; gradeClass='grade-f'; label='NEEDS TRAINING';
+    desc='Significant gaps in AI literacy identified. Formal training in AI fundamentals and supply chain AI applications is strongly recommended before operational AI tool use.';
+  }
+
+  // Avg difficulty
+  const diffMap = {easy:1,medium:2,hard:3};
+  const avgDiff = state.history.reduce((a,h)=>a+diffMap[h.diff],0) / state.history.length;
+  const avgDiffLabel = avgDiff >= 2.3 ? 'Hard' : avgDiff >= 1.7 ? 'Medium' : 'Easy';
+
+  // Populate results screen
+  document.getElementById('resultGrade').textContent = grade;
+  document.getElementById('resultGrade').className = 'result-grade '+gradeClass;
+  document.getElementById('resultLabel').textContent = label;
+  document.getElementById('resultDesc').textContent = desc;
+  document.getElementById('rScore').textContent = state.score;
+  document.getElementById('rCorrect').textContent = `${state.correctCount}/${TOTAL_QUESTIONS}`;
+  document.getElementById('rTime').textContent = `${mins}m ${secs}s`;
+  document.getElementById('rDiff').textContent = avgDiffLabel;
+
+  // Dimension breakdown
+  const bk = document.getElementById('dimBreakdown');
+  bk.innerHTML = '';
+  Object.entries(state.dimScores).forEach(([dim, s]) => {
+    if (s.total === 0) return;
+    const pct2 = Math.round(s.correct / s.total * 100);
+    const tag = pct2 >= 70 ? 'strong' : pct2 >= 50 ? 'ok' : 'weak';
+    const tagLabel = pct2 >= 70 ? 'Strong' : pct2 >= 50 ? 'OK' : 'Weak';
+    const color = pct2 >= 70 ? 'var(--green)' : pct2 >= 50 ? 'var(--accent)' : 'var(--red)';
+    bk.innerHTML += `
+      <div class="dim-row">
+        <div class="dim-name">${dim}</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar" style="width:0%;background:${color}" data-w="${pct2}"></div>
+        </div>
+        <div class="dim-pct">${pct2}%</div>
+        <div class="dim-tag ${tag}">${tagLabel}</div>
+      </div>`;
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.dim-bar').forEach(b => b.style.width = b.dataset.w+'%');
+  }, 200);
+
+  // Save to leaderboard
+  const entry = {
+    name: state.player.name,
+    org:  state.player.org,
+    score: state.score,
+    correct: state.correctCount,
+    grade,
+    time: `${mins}:${String(secs).padStart(2,'0')}`,
+    avgDiff: avgDiffLabel,
+    ts: Date.now(),
+    isYou: true,
+  };
+  state.yourEntry = entry;
+  addToLB(entry);
+
+  showScreen('results');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// LEADERBOARD RENDER
+// ══════════════════════════════════════════════════════════════════════
+function filterLB(grade, btn) {
+  state.lbFilter = grade;
+  document.querySelectorAll('.lb-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLB();
+}
+
+function renderLB() {
+  let lb = loadLB();
+  document.getElementById('lbCount').textContent = lb.length;
+
+  if (state.lbFilter !== 'all') {
+    lb = lb.filter(e => e.grade === state.lbFilter);
+  }
+
+  // Find your rank in full sorted list
+  const fullLB = loadLB();
+  if (state.yourEntry) {
+    const yourIdx = fullLB.findIndex(e => e.ts === state.yourEntry.ts);
+    const banner = document.getElementById('yourRankBanner');
+    banner.classList.add('visible');
+    document.getElementById('yourRankNum').textContent = '#'+(yourIdx+1);
+    document.getElementById('yourRankOf').textContent = `of ${fullLB.length} participant${fullLB.length!==1?'s':''}`;
+    document.getElementById('yourScoreDisplay').textContent = state.yourEntry.score;
+  }
+
+  const body = document.getElementById('lbBody');
+  body.innerHTML = '';
+  lb.forEach((entry, i) => {
+    const globalRank = fullLB.findIndex(e => e.ts === entry.ts) + 1;
+    const rankClass = globalRank===1?'rank-1':globalRank===2?'rank-2':globalRank===3?'rank-3':'rank-other';
+    const isYou = state.yourEntry && entry.ts === state.yourEntry.ts;
+    const tr = document.createElement('tr');
+    if (isYou) tr.className = 'highlight';
+    tr.innerHTML = `
+      <td class="rank-cell"><span class="${rankClass}">${globalRank===1?'🥇':globalRank===2?'🥈':globalRank===3?'🥉':'#'+globalRank}</span></td>
+      <td class="name-cell"><div class="name">${entry.name}${isYou?' <span style="font-size:.65rem;color:var(--accent);font-family:var(--mono)">(you)</span>':''}</div><div class="org">${entry.org}</div></td>
+      <td class="score-cell">${entry.score}</td>
+      <td><span class="grade-cell ${entry.grade}">${entry.grade}</span></td>
+      <td class="time-cell">${entry.time}</td>
+      <td class="diff-cell">${entry.avgDiff}</td>`;
+    body.appendChild(tr);
+  });
+
+  if (lb.length === 0) {
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;font-family:var(--mono);font-size:.8rem">No entries for this filter yet.</td></tr>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// RETAKE
+// ══════════════════════════════════════════════════════════════════════
+function retakeQuiz() {
+  state.yourEntry = null;
+  document.getElementById('yourRankBanner').classList.remove('visible');
+  showScreen('landing');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════
+seedLB();
+renderLB();
+</script>
+</body>
+</html>
