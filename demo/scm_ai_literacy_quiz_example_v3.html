@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI Literacy Assessment · Supply Chain Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ─────────────────────────────────────────────
+   RESET & ROOT
+───────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  /* Warm light palette */
+  --bg:         #f5f0e8;
+  --bg2:        #ede8de;
+  --surface:    #ffffff;
+  --surface2:   #faf7f2;
+  --border:     #d8d0c0;
+  --border2:    #c8bfae;
+
+  /* Text */
+  --ink:        #1a1814;
+  --ink2:       #3d3830;
+  --muted:      #7a7060;
+  --muted2:     #a89e8e;
+
+  /* Accents */
+  --amber:      #c8860a;
+  --amber-lt:   #f5e6c8;
+  --amber-bg:   #fdf6e8;
+  --navy:       #1b2c4a;
+  --navy-lt:    #e8edf5;
+  --teal:       #1a7a6e;
+  --teal-lt:    #e2f4f1;
+
+  /* Feedback */
+  --correct:    #1a7a4a;
+  --correct-bg: #e8f7ee;
+  --correct-bd: #b0dfc0;
+  --wrong:      #b83232;
+  --wrong-bg:   #fdeaea;
+  --wrong-bd:   #f0b0b0;
+  --reveal-bg:  #eef8f2;
+  --reveal-bd:  #a0d8b8;
+
+  /* Difficulty */
+  --easy-c:     #1a7a4a;
+  --easy-bg:    #e8f5ee;
+  --med-c:      #b07010;
+  --med-bg:     #fef3da;
+  --hard-c:     #9a2020;
+  --hard-bg:    #fdeaea;
+
+  /* Part colors */
+  --part1:      #1b2c4a;
+  --part1-lt:   #e8edf5;
+  --part2:      #7a3a00;
+  --part2-lt:   #fdf0e2;
+
+  --radius:     8px;
+  --radius-lg:  14px;
+  --shadow:     0 2px 16px rgba(0,0,0,0.08);
+  --shadow-lg:  0 8px 40px rgba(0,0,0,0.12);
+
+  --mono:  'JetBrains Mono', monospace;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans:  'Lato', sans-serif;
+}
+
+/* ─────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────── */
+html{background:var(--bg);color:var(--ink);font-family:var(--sans)}
+body{min-height:100vh;overflow-x:hidden}
+
+/* Subtle paper texture via layered gradients */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 120% 60% at 0% 0%,  rgba(200,134,10,0.06), transparent 60%),
+    radial-gradient(ellipse 80%  80% at 100% 100%,rgba(27,44,74,0.05),  transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23e8e0d0' opacity='.4'/%3E%3C/svg%3E");
+}
+
+.app{
+  position:relative;z-index:1;
+  max-width:780px;margin:0 auto;
+  padding:28px 24px 100px;
+}
+
+/* ─────────────────────────────────────────────
+   HEADER
+───────────────────────────────────────────── */
+.site-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:20px;
+  border-bottom:2px solid var(--border);
+  margin-bottom:36px;
+}
+.logo{
+  display:flex;align-items:baseline;gap:10px;
+}
+.logo-mark{
+  font-family:var(--serif);font-size:1.5rem;font-weight:900;
+  color:var(--navy);letter-spacing:-.01em;
+  line-height:1;
+}
+.logo-sub{
+  font-family:var(--mono);font-size:.62rem;
+  color:var(--muted);letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.nav-pills{display:flex;gap:8px}
+.nav-pill{
+  background:transparent;border:1.5px solid var(--border2);
+  color:var(--muted);padding:6px 16px;border-radius:999px;
+  cursor:pointer;font-family:var(--sans);font-size:.8rem;font-weight:700;
+  letter-spacing:.04em;transition:all .2s;
+}
+.nav-pill:hover{border-color:var(--amber);color:var(--amber)}
+.nav-pill.active{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* ─────────────────────────────────────────────
+   SCREENS
+───────────────────────────────────────────── */
+.screen{display:none;animation:fadeUp .35s ease both}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─────────────────────────────────────────────
+   LANDING
+───────────────────────────────────────────── */
+.landing-band{
+  background:var(--navy);
+  border-radius:var(--radius-lg);
+  padding:52px 48px;
+  margin-bottom:28px;
+  position:relative;overflow:hidden;
+}
+.landing-band::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,134,10,.25),transparent 70%);
+}
+.landing-band::after{
+  content:'';position:absolute;bottom:-60px;left:20px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.04),transparent 70%);
+}
+.land-eyebrow{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:18px;
+}
+.land-title{
+  font-family:var(--serif);font-size:clamp(2.4rem,6vw,3.8rem);
+  font-weight:900;line-height:1.05;color:#fff;
+  margin-bottom:16px;letter-spacing:-.02em;
+}
+.land-title em{color:var(--amber);font-style:normal}
+.land-desc{
+  font-size:1rem;color:rgba(255,255,255,.65);
+  line-height:1.75;max-width:500px;font-weight:300;
+}
+
+.specs-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin-bottom:28px;
+}
+.spec-box{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:18px 14px;text-align:center;
+  box-shadow:var(--shadow);
+}
+.spec-n{
+  font-family:var(--serif);font-size:2rem;font-weight:900;
+  color:var(--navy);line-height:1;margin-bottom:4px;
+}
+.spec-l{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);
+}
+
+.part-preview{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;
+}
+.part-box{
+  border-radius:var(--radius);padding:20px;border:1.5px solid;
+}
+.part-box.p1{background:var(--part1-lt);border-color:rgba(27,44,74,.2)}
+.part-box.p2{background:var(--part2-lt);border-color:rgba(122,58,0,.2)}
+.part-icon{font-size:1.4rem;margin-bottom:8px}
+.part-title{
+  font-family:var(--serif);font-size:1rem;font-weight:700;
+  margin-bottom:4px;
+}
+.part-box.p1 .part-title{color:var(--part1)}
+.part-box.p2 .part-title{color:var(--part2)}
+.part-desc{font-size:.8rem;color:var(--muted);line-height:1.55}
+
+.register-box{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:32px;
+  box-shadow:var(--shadow);
+}
+.reg-title{
+  font-family:var(--serif);font-size:1.5rem;font-weight:700;
+  color:var(--ink);margin-bottom:4px;
+}
+.reg-sub{font-size:.85rem;color:var(--muted);margin-bottom:24px}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.field label{
+  display:block;font-family:var(--mono);font-size:.65rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;
+}
+.field input,.field select{
+  width:100%;background:var(--surface2);
+  border:1.5px solid var(--border);color:var(--ink);
+  padding:10px 14px;border-radius:var(--radius);
+  font-family:var(--sans);font-size:.92rem;
+  outline:none;transition:border-color .2s;
+  appearance:none;
+}
+.field input:focus,.field select:focus{border-color:var(--navy)}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7060' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+.field option{background:#fff}
+.start-btn{
+  width:100%;background:var(--navy);color:#fff;
+  font-family:var(--serif);font-size:1.1rem;font-weight:700;
+  padding:15px;border:none;border-radius:var(--radius);cursor:pointer;
+  letter-spacing:.02em;transition:all .2s;margin-top:4px;
+}
+.start-btn:hover{background:#243d66;transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,44,74,.3)}
+.start-btn:active{transform:none}
+
+/* ─────────────────────────────────────────────
+   PART TRANSITION SCREEN
+───────────────────────────────────────────── */
+.transition-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:48px 40px;
+  text-align:center;box-shadow:var(--shadow-lg);
+  max-width:560px;margin:60px auto;
+}
+.trans-icon{font-size:3rem;margin-bottom:20px}
+.trans-eyebrow{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:12px;
+}
+.trans-title{
+  font-family:var(--serif);font-size:2rem;font-weight:900;
+  color:var(--ink);margin-bottom:12px;letter-spacing:-.02em;
+}
+.trans-desc{
+  font-size:.95rem;color:var(--muted);line-height:1.7;
+  margin-bottom:12px;
+}
+.trans-score-box{
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:16px 24px;
+  display:inline-block;margin:16px 0 28px;
+}
+.trans-score-label{font-family:var(--mono);font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.trans-score-val{font-family:var(--serif);font-size:2.4rem;font-weight:900;color:var(--navy)}
+.continue-btn{
+  background:var(--amber);color:#fff;
+  font-family:var(--serif);font-size:1.05rem;font-weight:700;
+  padding:14px 36px;border:none;border-radius:var(--radius);
+  cursor:pointer;letter-spacing:.02em;
+  transition:all .2s;
+}
+.continue-btn:hover{background:#a86e08;transform:translateY(-1px)}
+
+/* ─────────────────────────────────────────────
+   QUIZ TOPBAR
+───────────────────────────────────────────── */
+.quiz-topbar{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:20px;flex-wrap:wrap;
+}
+
+/* Part pill */
+.part-pill{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 14px;border-radius:999px;
+  font-weight:500;flex-shrink:0;
+}
+.part-pill.p1{background:var(--part1-lt);color:var(--part1);border:1.5px solid rgba(27,44,74,.2)}
+.part-pill.p2{background:var(--part2-lt);color:var(--part2);border:1.5px solid rgba(122,58,0,.2)}
+
+/* Progress */
+.progress-group{flex:1;min-width:180px}
+.progress-meta{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-bottom:6px;
+}
+.progress-rail{
+  height:6px;background:var(--bg2);border-radius:999px;overflow:hidden;
+  border:1px solid var(--border);
+}
+.progress-bar{
+  height:100%;border-radius:999px;
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+}
+.progress-bar.p1{background:var(--part1)}
+.progress-bar.p2{background:var(--amber)}
+
+/* Right chips */
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--surface);border:1.5px solid var(--border);
+  padding:6px 12px;border-radius:var(--radius);
+  font-family:var(--mono);font-size:.72rem;color:var(--muted);
+}
+.chip strong{color:var(--ink);font-weight:500}
+.diff-tag{
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;
+  text-transform:uppercase;padding:4px 10px;border-radius:999px;
+}
+.diff-tag.easy{background:var(--easy-bg);color:var(--easy-c);border:1px solid rgba(26,122,74,.2)}
+.diff-tag.medium{background:var(--med-bg);color:var(--med-c);border:1px solid rgba(176,112,16,.2)}
+.diff-tag.hard{background:var(--hard-bg);color:var(--hard-c);border:1px solid rgba(154,32,32,.2)}
+
+/* Timer ring */
+.timer-ring{position:relative;width:42px;height:42px;flex-shrink:0}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-arc{transition:stroke-dashoffset .95s linear;stroke-linecap:round}
+.timer-num{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.72rem;font-weight:500;color:var(--ink2);
+}
+.timer-num.warn{color:var(--wrong)}
+
+/* Streak row */
+.streak-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:16px;
+  font-family:var(--mono);font-size:.65rem;color:var(--muted);
+  letter-spacing:.04em;
+}
+.s-dots{display:flex;gap:4px;flex-wrap:wrap}
+.s-dot{
+  width:10px;height:10px;border-radius:50%;
+  border:1.5px solid var(--border2);
+  background:transparent;transition:all .3s;
+}
+.s-dot.correct{background:var(--correct);border-color:var(--correct)}
+.s-dot.wrong{background:var(--wrong);border-color:var(--wrong)}
+.s-dot.skip{background:var(--muted2);border-color:var(--muted2)}
+.s-dot.p2{border-color:var(--amber)}
+.streak-msg{color:var(--amber);font-weight:500}
+
+/* ─────────────────────────────────────────────
+   QUESTION CARD  ← key readability section
+───────────────────────────────────────────── */
+.question-card{
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  margin-bottom:16px;
+  animation:cardIn .3s cubic-bezier(.4,0,.2,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Card top stripe — signals part */
+.card-stripe{height:4px}
+.card-stripe.p1{background:linear-gradient(90deg,var(--part1),#2a4a7a)}
+.card-stripe.p2{background:linear-gradient(90deg,var(--amber),#e0a020)}
+
+.card-body{padding:28px 32px 24px}
+
+/* Question metadata row */
+.q-meta{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:16px;flex-wrap:wrap;
+}
+.q-num{
+  font-family:var(--mono);font-size:.68rem;font-weight:500;
+  color:var(--muted);letter-spacing:.08em;
+}
+.q-dim-tag{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;
+  padding:3px 10px;border-radius:999px;text-transform:uppercase;
+}
+.q-dim-tag.p1{background:var(--navy-lt);color:var(--navy);border:1px solid rgba(27,44,74,.2)}
+.q-dim-tag.p2{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(200,134,10,.25)}
+
+/* Scenario box — visually distinct from question */
+.scenario-box{
+  background:var(--surface2);
+  border-left:4px solid var(--amber);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:16px 20px;
+  margin-bottom:20px;
+}
+.scenario-label{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:6px;
+}
+.scenario-text{
+  font-size:.92rem;color:var(--ink2);line-height:1.68;
+  font-style:italic;
+}
+
+/* The actual question */
+.q-text{
+  font-family:var(--serif);font-size:1.15rem;font-weight:700;
+  line-height:1.55;color:var(--ink);margin-bottom:24px;
+  letter-spacing:-.01em;
+}
+
+/* ─────────────────────────────────────────────
+   OPTIONS  ← equal-length, clearly distinct
+───────────────────────────────────────────── */
+.options{display:flex;flex-direction:column;gap:10px}
+.option{
+  display:grid;
+  grid-template-columns:36px 1fr;
+  gap:14px;align-items:start;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px 16px 14px 14px;
+  cursor:pointer;text-align:left;
+  width:100%;transition:all .18s;
+  position:relative;
+}
+.option:hover:not(:disabled){
+  border-color:var(--navy);
+  background:var(--navy-lt);
+  transform:translateX(3px);
+}
+.opt-key{
+  width:28px;height:28px;border-radius:6px;
+  background:var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.72rem;font-weight:500;
+  color:var(--muted);flex-shrink:0;margin-top:1px;
+  transition:all .18s;
+}
+.option:hover:not(:disabled) .opt-key{background:var(--navy);color:#fff}
+.opt-text{
+  font-size:.93rem;line-height:1.6;color:var(--ink2);
+  padding-top:3px;
+}
+
+/* Selected */
+.option.selected{border-color:var(--navy);background:var(--navy-lt)}
+.option.selected .opt-key{background:var(--navy);color:#fff}
+
+/* Correct answer */
+.option.correct-ans{
+  border-color:var(--correct-bd)!important;
+  background:var(--correct-bg)!important;
+}
+.option.correct-ans .opt-key{background:var(--correct)!important;color:#fff!important}
+.option.correct-ans .opt-text{color:var(--correct)!important;font-weight:700}
+
+/* Wrong answer chosen */
+.option.wrong-ans{
+  border-color:var(--wrong-bd)!important;
+  background:var(--wrong-bg)!important;
+}
+.option.wrong-ans .opt-key{background:var(--wrong)!important;color:#fff!important}
+.option.wrong-ans .opt-text{color:var(--wrong)!important}
+
+/* Reveal correct when user got it wrong */
+.option.reveal-ans{
+  border-color:var(--reveal-bd);
+  background:var(--reveal-bg);
+}
+.option.reveal-ans .opt-key{background:var(--correct);color:#fff}
+.option.reveal-ans .opt-text{color:var(--correct);font-weight:700}
+
+.option:disabled{cursor:default;transform:none!important}
+
+/* ─────────────────────────────────────────────
+   EXPLANATION
+───────────────────────────────────────────── */
+.explanation{
+  display:none;
+  margin:16px 32px 24px;
+  padding:16px 20px;
+  border-radius:var(--radius);
+  font-size:.88rem;line-height:1.7;
+}
+.explanation.visible{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.explanation.correct-exp{
+  background:var(--correct-bg);border:1px solid var(--correct-bd);
+  color:#1a5a38;
+}
+.explanation.wrong-exp{
+  background:var(--wrong-bg);border:1px solid var(--wrong-bd);
+  color:#8a1a1a;
+}
+.explanation .exp-icon{font-size:1rem;margin-right:6px}
+.explanation strong{font-weight:700}
+
+/* ─────────────────────────────────────────────
+   NEXT BUTTON
+───────────────────────────────────────────── */
+.next-wrap{display:flex;justify-content:flex-end;margin-bottom:32px}
+.next-btn{
+  display:none;
+  background:var(--navy);color:#fff;
+  font-family:var(--serif);font-size:1rem;font-weight:700;
+  padding:12px 32px;border:none;border-radius:var(--radius);
+  cursor:pointer;letter-spacing:.02em;
+  transition:all .2s;
+}
+.next-btn.vis{display:block}
+.next-btn:hover{background:#243d66;transform:translateX(2px)}
+
+/* Flash overlay */
+.flash{
+  position:fixed;inset:0;z-index:200;pointer-events:none;
+  opacity:0;transition:opacity .1s;
+}
+.flash.c{background:rgba(26,122,74,.07)}
+.flash.w{background:rgba(184,50,50,.07)}
+.flash.show{opacity:1}
+
+/* ─────────────────────────────────────────────
+   RESULTS
+───────────────────────────────────────────── */
+.results-header{
+  background:var(--navy);border-radius:var(--radius-lg);
+  padding:44px 40px;margin-bottom:24px;
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+}
+.res-eyebrow{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:12px;
+}
+.res-name{
+  font-family:var(--serif);font-size:1.6rem;font-weight:900;color:#fff;
+  letter-spacing:-.02em;margin-bottom:8px;
+}
+.res-grade-label{
+  font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 14px;border-radius:999px;
+  display:inline-block;margin-bottom:12px;
+}
+.res-desc{font-size:.9rem;color:rgba(255,255,255,.65);line-height:1.65;max-width:420px}
+.res-big-grade{
+  font-family:var(--serif);font-size:6rem;font-weight:900;
+  line-height:1;letter-spacing:-.04em;
+}
+.grade-A{color:#5eed9a}
+.grade-B{color:#5ec8f5}
+.grade-C{color:#ffc94a}
+.grade-D{color:#ff9a5a}
+.grade-F{color:#ff6a6a}
+
+.res-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;
+}
+.res-stat{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:18px 14px;text-align:center;
+  box-shadow:var(--shadow);
+}
+.rs-val{
+  font-family:var(--serif);font-size:1.9rem;font-weight:900;
+  line-height:1;margin-bottom:4px;color:var(--navy);
+}
+.rs-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* Part breakdown */
+.part-results{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;
+}
+.part-result-box{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);
+}
+.pr-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.pr-icon{font-size:1.3rem}
+.pr-title{
+  font-family:var(--serif);font-size:.95rem;font-weight:700;
+}
+.pr-score{
+  font-family:var(--serif);font-size:2rem;font-weight:900;
+  margin-bottom:4px;
+}
+.pr-of{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+
+/* Dim breakdown */
+.bk-section{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:24px;margin-bottom:24px;box-shadow:var(--shadow);
+}
+.bk-title{
+  font-family:var(--serif);font-size:1.1rem;font-weight:700;
+  margin-bottom:18px;color:var(--ink);
+}
+.bk-row{
+  display:flex;align-items:center;gap:14px;
+  padding:11px 0;border-bottom:1px solid var(--border);
+}
+.bk-row:last-child{border-bottom:none}
+.bk-name{font-size:.85rem;color:var(--ink2);min-width:210px;line-height:1.35}
+.bk-bar-rail{flex:1;height:7px;background:var(--bg2);border-radius:999px;overflow:hidden}
+.bk-bar{height:100%;border-radius:999px;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+.bk-pct{font-family:var(--mono);font-size:.72rem;min-width:34px;text-align:right;color:var(--muted)}
+.bk-verdict{
+  font-family:var(--mono);font-size:.62rem;padding:3px 8px;
+  border-radius:999px;min-width:52px;text-align:center;
+}
+.bk-verdict.s{background:var(--correct-bg);color:var(--correct);border:1px solid var(--correct-bd)}
+.bk-verdict.o{background:var(--navy-lt);color:var(--navy);border:1px solid rgba(27,44,74,.2)}
+.bk-verdict.w{background:var(--wrong-bg);color:var(--wrong);border:1px solid var(--wrong-bd)}
+
+.action-row{display:flex;gap:12px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.act-primary{
+  background:var(--navy);color:#fff;
+  font-family:var(--serif);font-size:1rem;font-weight:700;
+  padding:13px 32px;border:none;border-radius:var(--radius);cursor:pointer;transition:all .2s;
+}
+.act-primary:hover{background:#243d66}
+.act-secondary{
+  background:transparent;color:var(--muted);
+  font-family:var(--sans);font-size:.85rem;font-weight:700;
+  padding:13px 24px;border:1.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;transition:all .2s;
+}
+.act-secondary:hover{border-color:var(--amber);color:var(--amber)}
+
+/* ─────────────────────────────────────────────
+   LEADERBOARD
+───────────────────────────────────────────── */
+.lb-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin-bottom:20px;gap:12px;flex-wrap:wrap;
+}
+.lb-head h2{
+  font-family:var(--serif);font-size:2rem;font-weight:900;color:var(--ink);
+}
+.lb-meta{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.live-pip{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--correct);margin-right:5px;
+  animation:pip 2.2s infinite;
+}
+@keyframes pip{0%,100%{opacity:1}50%{opacity:.3}}
+
+.lb-filters{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.lbf{
+  background:transparent;border:1.5px solid var(--border2);
+  color:var(--muted);padding:6px 16px;border-radius:999px;cursor:pointer;
+  font-family:var(--sans);font-size:.78rem;font-weight:700;transition:all .2s;
+}
+.lbf:hover,.lbf.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+.your-banner{
+  display:none;
+  background:var(--amber-bg);border:1.5px solid rgba(200,134,10,.3);
+  border-radius:var(--radius);padding:16px 20px;
+  margin-bottom:18px;
+  flex-wrap:wrap;gap:12px;
+  align-items:center;justify-content:space-between;
+}
+.your-banner.vis{display:flex}
+.yb-l{font-family:var(--mono);font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.yb-rank{font-family:var(--serif);font-size:2rem;font-weight:900;color:var(--amber)}
+.yb-of{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:2px}
+.yb-score{font-family:var(--serif);font-size:2rem;font-weight:900;color:var(--navy)}
+
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table thead tr{border-bottom:2px solid var(--border)}
+.lb-table th{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);padding:10px 12px;text-align:left;
+}
+.lb-table td{padding:13px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.lb-table tbody tr{transition:background .15s}
+.lb-table tbody tr:hover{background:var(--surface2)}
+.lb-table tbody tr.you-row{
+  background:var(--amber-bg);border-left:3px solid var(--amber);
+}
+.rank-badge{
+  font-family:var(--serif);font-size:1.2rem;font-weight:900;
+  width:40px;text-align:center;display:block;
+}
+.rk1{color:#c8860a}.rk2{color:#888}.rk3{color:#a06030}.rko{color:var(--muted)}
+.td-name{font-weight:700;font-size:.9rem;margin-bottom:2px}
+.td-org{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.td-score{font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--navy)}
+.grade-pip{
+  font-family:var(--mono);font-size:.75rem;padding:3px 10px;
+  border-radius:999px;display:inline-block;
+}
+.gA{background:var(--correct-bg);color:var(--correct)}
+.gB{background:var(--navy-lt);color:var(--navy)}
+.gC{background:var(--med-bg);color:var(--med-c)}
+.gD{background:rgba(255,154,90,.12);color:#c05020}
+.gF{background:var(--wrong-bg);color:var(--wrong)}
+.td-time{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+
+/* Responsive */
+@media(max-width:640px){
+  .fields-row{grid-template-columns:1fr}
+  .res-stats{grid-template-columns:repeat(2,1fr)}
+  .part-results{grid-template-columns:1fr}
+  .specs-row{grid-template-columns:repeat(2,1fr)}
+  .part-preview{grid-template-columns:1fr}
+  .results-header{grid-template-columns:1fr}
+  .res-big-grade{font-size:4rem;text-align:right}
+  .card-body{padding:20px 18px 18px}
+  .bk-name{min-width:140px;font-size:.8rem}
+  .landing-band{padding:36px 24px}
+}
+</style>
+</head>
+<body>
+<div class="flash" id="flash"></div>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-mark">AI Literacy</span>
+      <span class="logo-sub">Assessment · SCM Edition</span>
+    </div>
+    <div class="nav-pills">
+      <button class="nav-pill active" id="navHome"  onclick="showScreen('landing')">Home</button>
+      <button class="nav-pill"        id="navLB"    onclick="showScreen('leaderboard')">Rankings</button>
+    </div>
+  </header>
+
+  <!-- ══════ LANDING ══════ -->
+  <div class="screen active" id="screen-landing">
+
+    <div class="landing-band">
+      <div class="land-eyebrow">US Supply Chain · 2025 · AI Literacy Test</div>
+      <h1 class="land-title">How <em>AI-ready</em><br/>are you?</h1>
+      <p class="land-desc">A two-part, adaptive multiple-choice assessment measuring AI literacy for supply chain professionals. Questions adjust to your performance in real time.</p>
+    </div>
+
+    <div class="specs-row">
+      <div class="spec-box"><div class="spec-n">20</div><div class="spec-l">Questions</div></div>
+      <div class="spec-box"><div class="spec-n">2</div><div class="spec-l">Parts</div></div>
+      <div class="spec-box"><div class="spec-n">15</div><div class="spec-l">Min. avg.</div></div>
+      <div class="spec-box"><div class="spec-n">3</div><div class="spec-l">Dimensions</div></div>
+    </div>
+
+    <div class="part-preview">
+      <div class="part-box p1">
+        <div class="part-icon">🌐</div>
+        <div class="part-title">Part 1 — General AI Literacy</div>
+        <p class="part-desc">10 questions on universal AI concepts: how LLMs work, hallucination, bias, data privacy, and prompt quality. Relevant to any professional using AI tools.</p>
+      </div>
+      <div class="part-box p2">
+        <div class="part-icon">🚚</div>
+        <div class="part-title">Part 2 — SCM Domain AI Literacy</div>
+        <p class="part-desc">10 questions personalised to your role — each scenario reflects a real daily-work situation. Roles covered: Supply Chain Manager, Operations Manager, Procurement Manager, Logistics Coordinator, and Supply Chain Analyst.</p>
+      </div>
+    </div>
+
+    <div class="register-box">
+      <div class="reg-title">Begin Assessment</div>
+      <p class="reg-sub">Your result will appear on the live leaderboard.</p>
+      <div class="fields-row">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="e.g. Jordan Chen" autocomplete="off"/>
+        </div>
+        <div class="field">
+          <label>Organisation</label>
+          <input type="text" id="regOrg" placeholder="e.g. Apex Logistics" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="fields-row">
+        <div class="field">
+          <label>Years in Supply Chain</label>
+          <select id="regExp">
+            <option value="">Select experience</option>
+            <option value="0-2">0–2 years</option>
+            <option value="3-5">3–5 years</option>
+            <option value="6-10">6–10 years</option>
+            <option value="10+">10+ years</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Primary Role</label>
+          <select id="regRole">
+            <option value="">Select role</option>
+            <option value="scm">Supply Chain Manager</option>
+            <option value="ops">Operations Manager</option>
+            <option value="proc">Procurement Manager</option>
+            <option value="log">Logistics Coordinator</option>
+            <option value="analyst">Supply Chain Analyst</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">Start Assessment →</button>
+    </div>
+  </div>
+
+  <!-- ══════ TRANSITION ══════ -->
+  <div class="screen" id="screen-transition">
+    <div class="transition-card">
+      <div class="trans-icon">🚚</div>
+      <div class="trans-eyebrow">Part 1 Complete</div>
+      <h2 class="trans-title">Now entering<br/>Part 2</h2>
+      <p class="trans-desc" id="transDesc">General AI Literacy complete. The next 10 questions are tailored to your role — applying AI concepts to real daily-work scenarios in supply chain.</p>
+      <div class="trans-score-box">
+        <div class="trans-score-label">Part 1 Score</div>
+        <div class="trans-score-val" id="transPart1Score">—</div>
+      </div>
+      <br/>
+      <button class="continue-btn" onclick="beginPart2()">Continue to Part 2 →</button>
+    </div>
+  </div>
+
+  <!-- ══════ QUIZ ══════ -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-topbar">
+      <div class="part-pill p1" id="partPill">Part 1 · General</div>
+      <div class="progress-group">
+        <div class="progress-meta">
+          <span id="qCounterText">Question 1 of 20</span>
+          <span id="qDimText">AI Concepts</span>
+        </div>
+        <div class="progress-rail">
+          <div class="progress-bar p1" id="progressBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="chip">Score <strong id="liveScore">0</strong></div>
+        <div class="diff-tag easy" id="diffTag">Easy</div>
+        <div class="timer-ring">
+          <svg width="42" height="42" viewBox="0 0 42 42">
+            <circle cx="21" cy="21" r="17" fill="none" stroke="#d8d0c0" stroke-width="3"/>
+            <circle class="timer-arc" id="timerArc" cx="21" cy="21" r="17"
+              fill="none" stroke="#1b2c4a" stroke-width="3"
+              stroke-dasharray="107" stroke-dashoffset="0"/>
+          </svg>
+          <div class="timer-num" id="timerNum">45</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="streak-row">
+      <span>History:</span>
+      <div class="s-dots" id="streakDots"></div>
+      <span class="streak-msg" id="streakMsg"></span>
+    </div>
+
+    <div class="question-card" id="questionCard">
+      <div class="card-stripe p1" id="cardStripe"></div>
+      <div class="card-body">
+        <div class="q-meta">
+          <span class="q-num" id="qNum">Q01</span>
+          <span class="q-dim-tag p1" id="qDimTag">AI Capabilities</span>
+          <span id="qRoleTag" style="display:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;padding:3px 9px;border-radius:999px;background:var(--part2-lt);color:var(--part2);border:1px solid rgba(122,58,0,.15)"></span>
+        </div>
+        <div class="scenario-box" id="scenarioBox" style="display:none">
+          <div class="scenario-label">📋 Scenario</div>
+          <div class="scenario-text" id="scenarioText"></div>
+        </div>
+        <div class="q-text" id="qText"></div>
+        <div class="options" id="optionsList"></div>
+      </div>
+      <div class="explanation" id="explanation"></div>
+    </div>
+
+    <div class="next-wrap">
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- ══════ RESULTS ══════ -->
+  <div class="screen" id="screen-results">
+    <div class="results-header">
+      <div>
+        <div class="res-eyebrow">Assessment Complete</div>
+        <div class="res-name" id="resName">Jordan Chen</div>
+        <div class="res-grade-label grade-A" id="resGradeLabel" style="margin-bottom:12px">Advanced</div>
+        <p class="res-desc" id="resDesc"></p>
+      </div>
+      <div class="res-big-grade grade-A" id="resBigGrade">A</div>
+    </div>
+
+    <div class="res-stats">
+      <div class="res-stat"><div class="rs-val" id="rsTotalScore">0</div><div class="rs-label">Total Score</div></div>
+      <div class="res-stat"><div class="rs-val" id="rsCorrect">0/20</div><div class="rs-label">Correct</div></div>
+      <div class="res-stat"><div class="rs-val" id="rsTime">0m</div><div class="rs-label">Time</div></div>
+      <div class="res-stat"><div class="rs-val" id="rsDiff">—</div><div class="rs-label">Avg. Difficulty</div></div>
+    </div>
+
+    <div class="part-results">
+      <div class="part-result-box">
+        <div class="pr-header">
+          <div class="pr-icon">🌐</div>
+          <div class="pr-title" style="color:var(--part1)">Part 1 — General AI Literacy</div>
+        </div>
+        <div class="pr-score" style="color:var(--part1)" id="rsPart1">0</div>
+        <div class="pr-of" id="rsPart1Of">0/10 correct</div>
+      </div>
+      <div class="part-result-box">
+        <div class="pr-header">
+          <div class="pr-icon">🚚</div>
+          <div class="pr-title" style="color:var(--part2)">Part 2 — SCM Domain AI</div>
+        </div>
+        <div class="pr-score" style="color:var(--part2)" id="rsPart2">0</div>
+        <div class="pr-of" id="rsPart2Of">0/10 correct</div>
+      </div>
+    </div>
+
+    <div class="bk-section">
+      <div class="bk-title">Dimension Breakdown</div>
+      <div id="dimBreakdown"></div>
+    </div>
+
+    <div class="action-row">
+      <button class="act-primary" onclick="showScreen('leaderboard')">View Leaderboard →</button>
+      <button class="act-secondary" onclick="retake()">Retake Assessment</button>
+    </div>
+  </div>
+
+  <!-- ══════ LEADERBOARD ══════ -->
+  <div class="screen" id="screen-leaderboard">
+    <div class="lb-head">
+      <h2>Rankings</h2>
+      <div class="lb-meta"><span class="live-pip"></span>Live · <span id="lbCount">0</span> participants</div>
+    </div>
+
+    <div class="your-banner" id="yourBanner">
+      <div>
+        <div class="yb-l">Your Position</div>
+        <div class="yb-rank" id="ybRank">#—</div>
+        <div class="yb-of" id="ybOf">of — participants</div>
+      </div>
+      <div style="text-align:right">
+        <div class="yb-l">Your Score</div>
+        <div class="yb-score" id="ybScore">—</div>
+      </div>
+    </div>
+
+    <div class="lb-filters">
+      <button class="lbf on" onclick="lbFilter('all',this)">All</button>
+      <button class="lbf"   onclick="lbFilter('A',this)">Grade A</button>
+      <button class="lbf"   onclick="lbFilter('B',this)">Grade B</button>
+      <button class="lbf"   onclick="lbFilter('C',this)">Grade C</button>
+      <button class="lbf"   onclick="lbFilter('part1',this)">Part 1 leaders</button>
+      <button class="lbf"   onclick="lbFilter('part2',this)">Part 2 leaders</button>
+    </div>
+
+    <table class="lb-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Participant</th><th>Total</th>
+          <th>P1</th><th>P2</th><th>Grade</th><th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody"></tbody>
+    </table>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════════════════
+//  QUESTION BANK  v3
+//
+//  PART 1 — General AI Literacy (10 Qs)
+//    · Concise question text: ≤20 words per stem
+//    · No scenario box unless the scenario itself is the
+//      whole point of the question (kept very short)
+//    · timeLimit: 40–45 s (unchanged from v2)
+//
+//  PART 2 — SCM Domain AI Literacy (10 Qs)
+//    · Each question tagged roles[] — the engine picks
+//      questions matching the candidate's selected role
+//      before falling back to any Part 2 question
+//    · timeLimit: 60–90 s to allow full scenario reading
+//    · Scenarios are realistic daily-work vignettes
+//    · Option texts balanced in length (~15-22 words each)
+// ══════════════════════════════════════════════════════════
+
+// ─────────── PART 1: GENERAL AI LITERACY ─────────────────
+// Stems trimmed to ≤20 words. Scenarios removed or compressed
+// to one short sentence where they add essential context.
+
+const QB = [
+
+  {id:'g1',part:1,diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'Which task is a Large Language Model (LLM) genuinely well-suited for?',
+   options:[
+     'Executing financial transactions automatically without any human review',
+     'Drafting a structured document from a detailed brief you supply',
+     'Giving legally binding interpretations of regulatory documents',
+     'Predicting market prices reliably using only recent news articles'
+   ],correct:1,
+   explanation:'<strong>Drafting text from a brief</strong> is a core LLM strength — synthesising context into coherent prose. LLMs cannot safely execute transactions, guarantee legal accuracy, or reliably predict prices.'},
+
+  {id:'g2',part:1,diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'An LLM gives a confident-sounding answer about a competitor\'s pricing. What is the key risk?',
+   options:[
+     'Confident language in an LLM response reliably signals that the facts are correct',
+     'LLMs can generate plausible, fluent text that is factually wrong — called hallucination',
+     'LLMs always signal clearly when they are uncertain about a claim',
+     'LLM outputs are automatically verified against external databases before delivery'
+   ],correct:1,
+   explanation:'<strong>Hallucination</strong>: LLMs produce confident, coherent text that can be factually wrong. Tone does not indicate accuracy — always verify high-stakes claims from an independent source.'},
+
+  {id:'g3',part:1,diff:'easy',dim:'AI Capabilities & Limitations',points:10,timeLimit:45,
+   scenario:'',
+   text:'What does a model\'s "knowledge cutoff date" mean for users?',
+   options:[
+     'The model stops generating text once it reaches a set word limit per session',
+     'The model\'s training data ends at a fixed date, so it may lack recent information',
+     'The model is certified only to answer questions on pre-approved topic lists',
+     'The model must be updated weekly to stay accurate on fast-moving topics'
+   ],correct:1,
+   explanation:'A <strong>knowledge cutoff</strong> means training data ends at a specific date. Events, policy changes, or new research published after that date are unknown to the model unless it has retrieval tools.'},
+
+  {id:'g4',part:1,diff:'medium',dim:'AI Capabilities & Limitations',points:20,timeLimit:40,
+   scenario:'',
+   text:'What does "hallucination" mean specifically in the context of LLMs?',
+   options:[
+     'The model generating creative fiction when a user explicitly requests imaginative content',
+     'The model stating fabricated facts confidently — names, figures, or citations that do not exist',
+     'The model producing answers that are unusually long or repetitive for simple requests',
+     'The model declining to answer questions it considers sensitive or out of scope'
+   ],correct:1,
+   explanation:'<strong>Hallucination</strong> = the model invents factual-sounding content — statistics, citations, dates — with no grounding in reality. It is distinct from creative writing and happens even in professional, business contexts.'},
+
+  {id:'g5',part:1,diff:'medium',dim:'AI Capabilities & Limitations',points:20,timeLimit:40,
+   scenario:'',
+   text:'What best describes "training data bias" in AI models?',
+   options:[
+     'Developers intentionally programme models to prefer certain political or commercial viewpoints',
+     'Imbalances in training data cause the model to produce systematically skewed outputs',
+     'Bias only appears when users write poorly-worded or ambiguous prompts',
+     'Bias is a hardware issue caused by the computing infrastructure used for training'
+   ],correct:1,
+   explanation:'<strong>Training data bias</strong>: if the data used to train a model over- or under-represents certain groups or scenarios, the model reproduces those imbalances — often without any deliberate design intent.'},
+
+  {id:'g6',part:1,diff:'easy',dim:'AI Output Evaluation',points:10,timeLimit:45,
+   scenario:'An AI report states: "Revenue will grow 18.7% in Q3."',
+   text:'What is the most important step before using this figure in a presentation?',
+   options:[
+     'Check that the figure is formatted consistently with your company\'s reporting style',
+     'Cross-reference the specific figure against primary data sources to confirm accuracy',
+     'Ask the AI to regenerate it until it produces a rounder, more intuitive number',
+     'Accept the figure — AI tools always draw on verified financial databases'
+   ],correct:1,
+   explanation:'<strong>Specific numbers carry the highest hallucination risk.</strong> Precise-looking figures can be fabricated. Any number driving a decision must be checked against the underlying source.'},
+
+  {id:'g7',part:1,diff:'medium',dim:'AI Output Evaluation',points:20,timeLimit:40,
+   scenario:'You ask an AI to recommend the best software vendors for your team.',
+   text:'Which factor most likely introduces systematic bias into the AI\'s recommendation?',
+   options:[
+     'The AI favours vendors whose names appear earlier in alphabetical order in its training data',
+     'Well-known vendors are over-represented in training data, so the AI favours established names over newer alternatives',
+     'The AI randomly rotates vendor recommendations to ensure fairness across sessions',
+     'The AI is unbiased because it has no financial relationship with any vendor it mentions'
+   ],correct:1,
+   explanation:'<strong>Representation bias</strong>: vendors with more online presence dominate training data — the AI is more likely to recommend them regardless of actual suitability for your specific context.'},
+
+  {id:'g8',part:1,diff:'medium',dim:'AI Output Evaluation',points:20,timeLimit:40,
+   scenario:'',
+   text:'An AI model\'s output barely changes whether you give it positive or negative input data. What does this indicate?',
+   options:[
+     'High stability — consistent outputs across inputs indicate good model engineering quality',
+     'The model is over-relying on training priors rather than properly weighting your specific inputs',
+     'You need to reformat your data into a different file type for the model to process it correctly',
+     'The model is designed to smooth out extremes and produce conservative, averaged responses'
+   ],correct:1,
+   explanation:'Insensitivity to input variation suggests the model is <strong>anchored to its training distribution</strong> rather than your data. A well-behaved model should produce noticeably different outputs when given materially different inputs.'},
+
+  {id:'g9',part:1,diff:'hard',dim:'AI Output Evaluation',points:30,timeLimit:40,
+   scenario:'A vendor\'s AI scored 96% on its benchmark. Your pilot shows 68% on your actual data.',
+   text:'Which is the most likely explanation, and what should it mean for your procurement decision?',
+   options:[
+     'Your internal data quality is the cause — invest in data cleaning and re-run the pilot before deciding',
+     'Benchmark overfitting or domain mismatch; the pilot result is the more reliable signal — base SLAs on observed pilot performance, not marketing benchmarks',
+     'The tool needs at least six months of live operation before reaching its published benchmark level',
+     'A 28-point gap is within acceptable variance — proceed with full deployment as planned'
+   ],correct:1,
+   explanation:'<strong>Benchmark overfitting and domain mismatch</strong> are the most common cause. Vendors optimise for public test sets that may not reflect your data. The pilot on your data is the reliable signal — procurement SLAs must reference pilot performance, not benchmark claims.'},
+
+  {id:'g10',part:1,diff:'easy',dim:'AI Workflow & Governance',points:10,timeLimit:45,
+   scenario:'',
+   text:'What is the main governance risk of pasting confidential data into a public AI chatbot?',
+   options:[
+     'The AI will refuse to process confidential inputs and return an error message',
+     'The provider may log or retain that data, potentially exposing it to third parties or using it for training',
+     'The AI can only process public data and will silently ignore any confidential information you provide',
+     'The AI will automatically anonymise sensitive inputs before processing them'
+   ],correct:1,
+   explanation:'<strong>Data retention risk</strong>: many commercial AI providers log inputs for safety monitoring or model training. Pasting confidential data can violate NDAs, privacy regulations, or company policy — always check provider terms before submitting sensitive information.'},
+
+  {id:'g11',part:1,diff:'medium',dim:'AI Workflow & Governance',points:20,timeLimit:40,
+   scenario:'',
+   text:'Which describes the most responsible way to use AI for a high-stakes written report?',
+   options:[
+     'Submit the AI-generated report directly — models trained on expert data reliably produce expert outputs',
+     'Use AI to generate a first draft, then review, fact-check key claims, and revise before finalising',
+     'Avoid AI for written work entirely — AI text is always lower quality than human-written content',
+     'Use AI only for spelling and grammar checks, never for generating any substantive content'
+   ],correct:1,
+   explanation:'<strong>Human-in-the-loop review</strong> is the correct approach. AI accelerates drafting; human review adds verification, judgment, and accountability — essential for any output that drives real decisions.'},
+
+  {id:'g12',part:1,diff:'medium',dim:'AI Workflow & Governance',points:20,timeLimit:40,
+   scenario:'',
+   text:'What is "prompt injection," and why should professionals using AI tools be aware of it?',
+   options:[
+     'A technique for writing longer, more detailed prompts to extract richer AI outputs',
+     'A cyberattack where hidden instructions in external content manipulate an AI system\'s behaviour',
+     'A method for pre-loading your company\'s internal data into an AI tool before a session',
+     'The process of periodically retraining an AI model to keep it up to date with new data'
+   ],correct:1,
+   explanation:'<strong>Prompt injection</strong>: malicious instructions hidden in a document, email, or webpage can cause an AI system to behave unexpectedly — disclosing data, taking unauthorised actions, or ignoring its original instructions. Any AI that processes external content is potentially exposed.'},
+
+  {id:'g13',part:1,diff:'hard',dim:'AI Workflow & Governance',points:30,timeLimit:40,
+   scenario:'After 12 months, your team no longer reviews AI writing-tool outputs before sending them.',
+   text:'Which phenomenon is this, and which intervention is most structurally effective?',
+   options:[
+     'Efficient automation — the team has correctly learned a validated tool no longer needs oversight',
+     'Automation bias — over-reliance that erodes critical review; effective fixes include mandatory spot-checks and periodic AI-off exercises to preserve human oversight capability',
+     'Confirmation bias — staff read only the parts of the AI output that align with their existing views',
+     'Model drift — the AI quality has degraded gradually and the tool needs immediate retraining'
+   ],correct:1,
+   explanation:'<strong>Automation bias</strong>: humans systematically over-trust automated outputs, especially after a reliability track record builds. Training alone is weak — structural interventions (mandatory checkpoints, regular AI-off drills, rotating challenge roles) are required to maintain genuine oversight.'},
+
+  {id:'g14',part:1,diff:'hard',dim:'AI Capabilities & Limitations',points:30,timeLimit:40,
+   scenario:'',
+   text:'What does "distributional shift" mean, and why does it matter operationally?',
+   options:[
+     'The model distributes outputs across multiple formats simultaneously to improve compatibility',
+     'When live data diverges from training data patterns, causing model accuracy to degrade — often without warning',
+     'A design feature that shifts model outputs toward more conservative, lower-risk predictions',
+     'The process by which a model shares learned parameters across different business units'
+   ],correct:1,
+   explanation:'<strong>Distributional shift</strong>: the model encounters inputs that differ from its training distribution — e.g. a model trained on stable conditions facing a novel disruption. Accuracy can collapse sharply, often with no visible warning signal to the user.'},
+
+  {id:'g15',part:1,diff:'hard',dim:'AI Output Evaluation',points:30,timeLimit:40,
+   scenario:'A vendor claims their AI provides "Explainable AI (XAI)" for every recommendation.',
+   text:'Which response best evaluates whether this claim is substantive?',
+   options:[
+     'Accept the claim — any AI that gives a reason for its output is sufficiently explainable for business use',
+     'Ask whether explanations are post-hoc approximations or architecturally intrinsic, and whether their faithfulness to the model\'s actual reasoning has been independently validated',
+     'Reject the claim outright — no current AI system is capable of genuine explainability',
+     'Ask the vendor to demonstrate the XAI feature on a sample query involving a competitor product'
+   ],correct:1,
+   explanation:'<strong>XAI quality varies widely.</strong> Post-hoc methods (SHAP, LIME) approximate model reasoning and may not reflect the actual decision process. Intrinsic interpretability is more reliable. For high-stakes use, ask: what type of XAI is this, and has its faithfulness been independently validated?'},
+
+  // ─────────── PART 2: SCM DOMAIN AI LITERACY ──────────────────────
+  //
+  //  roles[] lists which registration roles see this question first.
+  //  Values match the <select id="regRole"> option values:
+  //    'scm'     → Supply Chain Manager
+  //    'ops'     → Operations Manager
+  //    'proc'    → Procurement Manager
+  //    'log'     → Logistics Coordinator
+  //    'analyst' → Supply Chain Analyst
+  //  An empty roles[] means the question is universal (fallback pool).
+  //
+  //  timeLimit: 60–90 s
+
+  // ── Supply Chain Manager scenarios ───────────────────────────────
+  {id:'s_scm1',part:2,diff:'easy',dim:'AI in SCM — Strategy & Oversight',points:10,timeLimit:60,
+   roles:['scm'],
+   scenario:'You are reviewing a monthly supply chain performance dashboard. Your BI vendor has just added an AI "insight" panel that automatically highlights KPI anomalies and suggests root causes.',
+   text:'Which is the most responsible way to use these AI-generated root-cause suggestions?',
+   options:[
+     'Present the AI\'s root-cause suggestions directly to the executive team as confirmed findings from the data',
+     'Treat the suggestions as hypotheses to investigate — validate each one against operational data before reporting upward',
+     'Ignore the AI suggestions entirely and rely only on the analyst team\'s manual commentary',
+     'Accept whichever suggestion matches your existing intuition about what caused the anomaly'
+   ],correct:1,
+   explanation:'AI anomaly explanations are <strong>hypotheses, not conclusions</strong>. The model identifies statistical patterns but lacks operational context — validating suggestions against ground-truth data before escalation is the responsible approach.'},
+
+  {id:'s_scm2',part:2,diff:'medium',dim:'AI in SCM — Strategy & Oversight',points:20,timeLimit:75,
+   roles:['scm'],
+   scenario:'Your company is evaluating an AI vendor for end-to-end supply chain optimisation. The vendor\'s demo shows impressive results, and the sales team quotes a 94% accuracy figure from their published benchmark study.',
+   text:'Which due-diligence step is most critical before signing a contract?',
+   options:[
+     'Verify that the vendor\'s benchmark dataset closely matches your own network structure, data quality, and disruption frequency',
+     'Confirm that the vendor has case studies from at least three Fortune 500 companies in unrelated industries',
+     'Ensure that the AI tool has received certification from a recognised supply chain standards body',
+     'Check that the tool integrates with your current ERP system without requiring data migration'
+   ],correct:0,
+   explanation:'<strong>Domain and data match</strong> is the decisive factor. A 94% benchmark accuracy on a dataset that differs from your network, SKU variety, or disruption environment tells you little about live performance. Requiring a pilot on your actual data is the gold standard.'},
+
+  {id:'s_scm3',part:2,diff:'hard',dim:'AI in SCM — Strategy & Oversight',points:30,timeLimit:90,
+   roles:['scm'],
+   scenario:'Eighteen months after deploying an AI demand-forecasting tool, you notice that your planning team has stopped producing independent manual forecasts. They present the AI output at S&OP meetings without challenge. Last quarter, the AI failed to anticipate a demand spike driven by a viral social-media trend, and the company had a significant stockout.',
+   text:'Which combination of structural interventions would most effectively prevent this from recurring?',
+   options:[
+     'Replace the AI tool with a newer model version and send the planning team to AI literacy training',
+     'Mandate that analysts produce independent baseline forecasts for review alongside AI outputs, and run quarterly AI-off drills to maintain manual forecasting capability',
+     'Require the AI vendor to update the model monthly with the latest demand data to reduce future blind spots',
+     'Limit AI forecast usage to operational-level planning and reserve strategic-level forecasting for senior managers only'
+   ],correct:1,
+   explanation:'<strong>Automation bias</strong> is the root cause. Structural interventions — independent parallel estimates and regular manual-only exercises — preserve analytical skills and critical oversight. Model updates help but do not address the human behaviour problem.'},
+
+  // ── Operations Manager scenarios ──────────────────────────────────
+  {id:'s_ops1',part:2,diff:'easy',dim:'AI in Operations — Efficiency & Risk',points:10,timeLimit:60,
+   roles:['ops'],
+   scenario:'Your warehouse has just deployed an AI-powered picking route optimisation system. The system promises a 22% reduction in walk time. On day one, a picker notices the AI is routing them past closed aisles due to a maintenance block that was logged that morning.',
+   text:'What does this incident most clearly illustrate about AI operational tools?',
+   options:[
+     'The AI system has a software defect and should be taken offline immediately for debugging',
+     'AI optimisation tools depend on the accuracy and timeliness of input data — stale or incomplete data produces unsafe or inefficient outputs',
+     'AI routing tools are inherently unsuitable for dynamic warehouse environments with frequent layout changes',
+     'Pickers should override the AI system whenever its route seems slightly inconvenient or inefficient'
+   ],correct:1,
+   explanation:'<strong>Garbage in, garbage out</strong> applies directly: the AI optimised correctly given its data, but that data was stale. Operational AI tools require real-time, accurate input — data governance and update cadences are as critical as the model itself.'},
+
+  {id:'s_ops2',part:2,diff:'medium',dim:'AI in Operations — Efficiency & Risk',points:20,timeLimit:75,
+   roles:['ops'],
+   scenario:'Your operations team is trialling an AI predictive-maintenance system for conveyor equipment. The system flags a motor as "high failure risk" and recommends immediate shutdown for inspection. Your maintenance manager believes the motor is fine based on recent manual checks, and a shutdown would halt the line for four hours during peak season.',
+   text:'Which response best balances the AI recommendation against operational judgment?',
+   options:[
+     'Override the AI immediately — the maintenance manager\'s direct experience outweighs any model output',
+     'Follow the AI recommendation automatically — predictive maintenance models are specifically designed for this decision and should be trusted',
+     'Treat the AI flag as a strong signal: run a rapid targeted check on the specific components the model flagged before deciding whether to shut down',
+     'Defer the inspection until the next scheduled maintenance window regardless of the AI\'s risk level'
+   ],correct:2,
+   explanation:'Neither pure override nor blind compliance is correct. <strong>Targeted rapid verification</strong> uses the AI\'s signal efficiently — checking the specific subsystem it flagged rather than a full inspection — enabling an evidence-based shutdown decision without unnecessary disruption.'},
+
+  {id:'s_ops3',part:2,diff:'hard',dim:'AI in Operations — Efficiency & Risk',points:30,timeLimit:90,
+   roles:['ops'],
+   scenario:'Your distribution centre is deploying an AI agent that autonomously re-routes outbound shipments in real time when carrier delays are detected. The agent can redirect up to 500 shipments per hour. During a test, you discover the agent re-routed a batch of temperature-controlled pharmaceutical shipments to a carrier not certified for cold-chain transport, because that carrier had faster estimated delivery.',
+   text:'Which root cause and governance fix most directly addresses this failure mode?',
+   options:[
+     'The AI agent needs more training data on pharmaceutical logistics before it can be trusted for cold-chain decisions',
+     'The agent\'s optimisation objective (speed) did not include hard constraints for regulatory compliance; governance must embed non-negotiable rule sets — such as carrier certification requirements — as inviolable constraints before the AI evaluates any other objective',
+     'The agent should require human approval for every re-routing decision, eliminating autonomous action entirely',
+     'The cold-chain failure was a one-off edge case — implement a manual review process specifically for pharmaceutical shipments and allow the agent to operate autonomously elsewhere'
+   ],correct:1,
+   explanation:'<strong>Objective specification failure</strong>: the agent optimised perfectly for what it was told to optimise (speed), but compliance constraints were absent from its objective function. The fix is architectural — hard constraints must be encoded as inviolable pre-filters, not as soft preferences the model can trade off against speed.'},
+
+  // ── Procurement Manager scenarios ─────────────────────────────────
+  {id:'s_proc1',part:2,diff:'easy',dim:'AI in Procurement — Sourcing & Compliance',points:10,timeLimit:60,
+   roles:['proc'],
+   scenario:'Your procurement team uses an AI tool to screen incoming supplier invoices and flag those that deviate from agreed contract terms. The tool claims a 96% detection rate in testing.',
+   text:'Which risk is most important to address before removing the manual review step entirely?',
+   options:[
+     'The AI may process invoices too slowly to support your current payment cycle timelines',
+     'The remaining 4% of undetected deviations could represent material financial exposure at invoice volume — human review of a risk-stratified sample remains necessary',
+     'The AI cannot handle invoices submitted in PDF format and requires a conversion step first',
+     'Suppliers may object to having their invoices reviewed by an automated system rather than a human'
+   ],correct:1,
+   explanation:'<strong>Residual risk scales with volume.</strong> At 1,000 invoices/month, 4% undetected = 40 missed deviations. The business case for full automation must account for the financial exposure of those misses — a risk-stratified human review layer is prudent until error rates are measured in live production.'},
+
+  {id:'s_proc2',part:2,diff:'medium',dim:'AI in Procurement — Sourcing & Compliance',points:20,timeLimit:75,
+   roles:['proc'],
+   scenario:'You ask an AI sourcing tool to identify the top five alternative suppliers for a critical raw material. The tool returns a confident list with ratings. You notice that all five are large, well-established multinationals — no regional or emerging suppliers appear despite your team knowing several that are competitive on price.',
+   text:'What most likely explains this gap, and how should you adjust your process?',
+   options:[
+     'The AI is correct — large multinationals are objectively more reliable and the absence of smaller suppliers is a sound recommendation',
+     'Representation bias in training data favours well-documented suppliers; supplement AI output with your team\'s domain knowledge and run targeted searches for under-represented supplier categories',
+     'Regional suppliers are excluded because the AI only searches databases it has paid API access to',
+     'The AI intentionally limits results to suppliers with publicly available financial ratings to ensure comparability'
+   ],correct:1,
+   explanation:'<strong>Representation bias</strong> causes the AI to surface suppliers with large digital footprints — the very suppliers dominating its training data. Your team\'s domain knowledge of regional alternatives is a critical complement; AI output should be treated as a starting point, not a complete answer.'},
+
+  {id:'s_proc3',part:2,diff:'hard',dim:'AI in Procurement — Sourcing & Compliance',points:30,timeLimit:90,
+   roles:['proc'],
+   scenario:'Your organisation is deploying an AI contract-analysis tool to screen all new supplier agreements before signature. During a pilot, a legal colleague notices that the AI flagged a standard limitation-of-liability clause as "non-standard risk" in 8 of 10 contracts — clauses your legal team considers routine. Meanwhile, it missed an unusual auto-renewal clause with a 90-day notice window in 2 contracts.',
+   text:'What do these two errors together reveal about the AI tool\'s reliability for contract review?',
+   options:[
+     'The tool is performing well overall — an 80% detection rate on material clauses is acceptable for a first-generation AI system',
+     'High false-positive rate on routine clauses (alert fatigue risk) combined with false negatives on genuine risks suggests the tool is miscalibrated for your contract base; recalibration on your actual contract corpus and legal team validation is needed before production use',
+     'The false positives are the real problem — tune the tool to reduce them and the false negatives will also improve automatically',
+     'The missed auto-renewal clause is a data quality issue — ensure all contracts are converted to a consistent format before AI review'
+   ],correct:1,
+   explanation:'Both error types are diagnostic: <strong>high false positives</strong> cause alert fatigue (reviewers start ignoring flags); <strong>false negatives on genuine risks</strong> are the more dangerous failure. Together they indicate the model\'s decision thresholds are not calibrated to your specific contract language — recalibration on your own corpus is essential.'},
+
+  // ── Logistics Coordinator scenarios ───────────────────────────────
+  {id:'s_log1',part:2,diff:'easy',dim:'AI in Logistics — Routing & Tracking',points:10,timeLimit:60,
+   roles:['log'],
+   scenario:'Your TMS (Transportation Management System) has added an AI feature that automatically selects the lowest-cost carrier for each shipment. On a Monday morning, you receive a complaint that 15 urgent shipments were assigned to the cheapest carrier, which has a 48-hour standard lead time — missing the customer\'s promised delivery window.',
+   text:'What does this incident most directly illustrate about AI carrier-selection tools?',
+   options:[
+     'The AI made a correct decision based on cost — the delivery failure is a customer expectation management problem',
+     'The AI optimised for cost but lacked visibility of delivery urgency; AI optimisation tools must be configured with all relevant business constraints before deployment',
+     'The TMS AI feature is defective and should be disabled until the vendor issues a patch',
+     'Logistics coordinators should manually review and approve every AI carrier selection to prevent errors'
+   ],correct:1,
+   explanation:'<strong>Incomplete objective specification</strong>: the AI optimised perfectly for what it knew (cost), but delivery urgency was not part of its decision criteria. Configuring AI tools with all relevant constraints — service level, lead time, customer priority — before go-live is the coordinator\'s governance responsibility.'},
+
+  {id:'s_log2',part:2,diff:'medium',dim:'AI in Logistics — Routing & Tracking',points:20,timeLimit:75,
+   roles:['log'],
+   scenario:'Your company uses an AI route-optimisation tool for last-mile delivery. The AI generates daily routes that are 18% more efficient than historical human-planned routes. A senior driver reports that the AI consistently routes vehicles through a residential area during school drop-off hours, creating safety risks and complaints from the local council — a pattern human dispatchers always avoided.',
+   text:'Which response best addresses this issue without abandoning the efficiency gains?',
+   options:[
+     'Revert to fully manual route planning — the AI cannot be trusted to make safe routing decisions in urban environments',
+     'Add time-window and zone restrictions for school areas as hard constraints in the optimisation model, preserving the efficiency gains while encoding the local knowledge the AI lacks',
+     'Ask drivers to override the AI route manually whenever they judge it inappropriate — this preserves both safety and efficiency',
+     'Raise the safety concern with the AI vendor and wait for them to release an updated model version that handles school zones'
+   ],correct:1,
+   explanation:'<strong>Encoding domain knowledge as hard constraints</strong> is the correct fix. The AI lacked the contextual knowledge that human dispatchers held — but that knowledge can be formalised as time-window restrictions rather than abandoned. Relying on driver overrides is inconsistent and does not scale.'},
+
+  {id:'s_log3',part:2,diff:'hard',dim:'AI in Logistics — Routing & Tracking',points:30,timeLimit:90,
+   roles:['log'],
+   scenario:'Your freight broker has started using an AI tool to match loads to carriers dynamically. The AI achieves a 12% cost reduction. Six months in, your compliance team flags that the AI has been assigning loads to several carriers that are on your company\'s restricted carrier list — carriers that failed safety audits. The AI was never given access to the restricted list because it was stored in a separate internal system.',
+   text:'Which root cause and remedy most accurately describes this situation?',
+   options:[
+     'The AI tool has a defect in its safety screening module — the vendor must fix the bug before further use',
+     'The AI performed correctly given the data it had access to; the failure was a data integration gap — the restricted carrier list must be connected to the AI\'s data inputs as a hard exclusion filter before further autonomous operation',
+     'The compliance team should have audited the AI\'s carrier selections weekly — process failure by humans, not a system problem',
+     'Dynamic load matching is too high-risk for AI automation; revert to manual carrier selection for all loads regardless of cost impact'
+   ],correct:1,
+   explanation:'<strong>Data integration failure</strong>: the AI performed correctly within its data environment — it simply did not know about the restricted list. The governance lesson is that all relevant constraint data must be connected to any AI decision system before it operates autonomously. Data silos and AI agents are a dangerous combination.'},
+
+  // ── Supply Chain Analyst scenarios ────────────────────────────────
+  {id:'s_anl1',part:2,diff:'easy',dim:'AI in Analytics — Data & Insight',points:10,timeLimit:60,
+   roles:['analyst'],
+   scenario:'You use an AI assistant to draft a supplier spend analysis report. The AI produces a polished document in two minutes, including a table of the top 10 suppliers by spend with specific dollar figures and percentage shares.',
+   text:'What should you do before sharing this report with your manager?',
+   options:[
+     'Share it immediately — the AI generated the figures directly from your data, so they must be accurate',
+     'Verify the specific figures in the table against your source data systems before distribution',
+     'Add a disclaimer that the report was AI-generated and distribute it without further review',
+     'Ask the AI to regenerate the report once more to confirm the figures are consistent across both versions'
+   ],correct:1,
+   explanation:'<strong>Always verify AI-generated numbers against source systems.</strong> Even when an AI has access to your data, it can misaggregate, misattribute, or hallucinate figures — especially in tables. The two-minute draft is a starting point, not a finished product.'},
+
+  {id:'s_anl2',part:2,diff:'medium',dim:'AI in Analytics — Data & Insight',points:20,timeLimit:75,
+   roles:['analyst'],
+   scenario:'You are building a demand forecasting model using an AI platform. The platform reports a Mean Absolute Percentage Error (MAPE) of 6% on the validation set. When you deploy the model and track it for 8 weeks in production, the real-world MAPE is 19%.',
+   text:'Which explanation is most likely, and what should you do next?',
+   options:[
+     'The production environment has a data pipeline error — fix the integration and the model will return to 6% MAPE',
+     'The validation set likely did not represent the full range of production conditions — investigate for data leakage or distribution mismatch, and recalibrate the model on a holdout set that mirrors live data patterns',
+     'A 13-point MAPE gap is within normal variation for demand forecasting — continue using the model without changes',
+     'The AI platform has overstated its accuracy in the documentation — escalate to the vendor for a refund or credit'
+   ],correct:1,
+   explanation:'<strong>Validation-to-production gap</strong> almost always signals data leakage (future information in training data) or distribution mismatch (validation set too similar to training set). Investigate by auditing the validation split and testing on a truly held-out period that reflects live variability.'},
+
+  {id:'s_anl3',part:2,diff:'hard',dim:'AI in Analytics — Data & Insight',points:30,timeLimit:90,
+   roles:['analyst'],
+   scenario:'You are asked to evaluate whether to trust an AI supplier risk scoring tool for inclusion in your monthly executive risk report. The tool produces a score from 0–100 for each supplier. You run a back-test: you feed the tool historical supplier data from 24 months ago and compare its scores to what actually happened. You find that for suppliers it scored 70–100 (high risk), only 22% actually experienced a significant issue within the next 6 months.',
+   text:'What does this back-test result reveal, and how should it inform your recommendation?',
+   options:[
+     'A 22% hit rate among high-risk suppliers confirms the tool is useful — catching 1 in 5 real events is better than no AI screening at all',
+     'A 78% false positive rate for high-risk scores indicates the tool has poor precision — it will generate excessive alerts, erode stakeholder trust, and divert investigation resources; include it in reporting only after recalibration improves precision to an agreed threshold',
+     'The back-test result is inconclusive — 24 months of historical data is insufficient to evaluate a risk model reliably',
+     'The tool should be used as the primary risk source and the false positive rate will decrease naturally as the model learns from production data'
+   ],correct:1,
+   explanation:'<strong>Precision matters as much as recall.</strong> A 78% false positive rate means 78% of suppliers flagged as high-risk were fine — creating alert fatigue and wasted investigation effort. For executive reporting, a tool must meet a minimum precision threshold to maintain credibility. Recalibration (raising the score threshold, or retraining) before production use is the correct recommendation.'},
+
+  // ── Universal fallback questions (roles:[]) ───────────────────────
+  {id:'s_uni1',part:2,diff:'easy',dim:'AI Integration & Governance in SCM',points:10,timeLimit:60,
+   roles:[],
+   scenario:'An AI risk tool outputs: "Supplier X has a 74% probability of delivery delay in Q4."',
+   text:'What is the most important question to ask before including this figure in an executive briefing?',
+   options:[
+     'Whether the figure should be rounded to 75% to make it more intuitive for the audience',
+     'What specific data sources and methodology underlie this estimate, and how was it validated against actual outcomes',
+     'Whether the supplier has been notified of the AI\'s assessment and given a chance to respond',
+     'Whether the AI tool has been certified by a recognised supply chain standards body'
+   ],correct:1,
+   explanation:'A precise probability implies a quantitative model with specific inputs and validation history. Before presenting it, you must understand <strong>how it was calculated</strong> — an AI-generated probability without a transparent methodology is potentially misleading to executives who may treat precise-looking numbers as definitive.'},
+
+  {id:'s_uni2',part:2,diff:'medium',dim:'AI Integration & Governance in SCM',points:20,timeLimit:75,
+   roles:[],
+   scenario:'Your company deploys an AI agent that can autonomously place purchase orders up to $50,000 based on inventory signals from the WMS.',
+   text:'Which AI-specific risk — beyond standard cybersecurity controls — requires a dedicated governance policy?',
+   options:[
+     'The agent may develop a preference for certain carriers based on their position in the vendor master list',
+     'Prompt injection via external content — instructions hidden in a supplier invoice could cause the agent to place unauthorised or manipulated orders',
+     'The agent may place orders too slowly during peak periods to keep pace with inventory depletion rates',
+     'The agent may forward order confirmations to incorrect internal stakeholders due to a contact-list error'
+   ],correct:1,
+   explanation:'<strong>Prompt injection in agentic systems</strong> is a novel risk distinct from traditional cybersecurity threats. Malicious content embedded in supplier documents can override the agent\'s intended behaviour — triggering unauthorised orders or data exposure. Governance must include: sandboxed content processing, human approval thresholds for high-value orders, and full audit logging of all agent actions.'},
+
+  {id:'s_uni3',part:2,diff:'hard',dim:'AI Integration & Governance in SCM',points:30,timeLimit:90,
+   roles:[],
+   scenario:'Your company\'s AI demand forecasting tool was 90% accurate during a stable period. Following a sudden major-port disruption, its accuracy drops to 52% over the next six weeks. Your planning team continues to use the AI forecast as the primary input for production scheduling.',
+   text:'Which combination of immediate and medium-term actions is most appropriate?',
+   options:[
+     'Immediately disable the AI tool and revert to spreadsheet-based manual forecasting until the disruption resolves completely',
+     'Immediately: flag AI outputs as low-confidence and elevate human expert override authority; medium-term: collect disruption-period data for model retraining and define accuracy thresholds below which human-led planning automatically takes precedence',
+     'Continue using the AI forecast unchanged — a 52% accuracy is still better than purely random estimates for production scheduling',
+     'Ask the AI vendor to issue an emergency patch to account for the port disruption within 48 hours'
+   ],correct:1,
+   explanation:'<strong>Distributional shift protocol</strong>: the immediate response is to reduce automated reliance and elevate human judgment — not to disable the tool entirely, which would be disruptive. The medium-term response is data collection for retraining and definition of objective accuracy thresholds that trigger governance escalation automatically in future disruption events.'},
+];
+
+// ══════════════════════════════════════════════════════════
+// RANDOMISATION ENGINE
+// Shuffles the option order at render time, tracking the
+// correct answer through the shuffle. Also enforces answer-
+// position balance across the session.
+// ══════════════════════════════════════════════════════════
+
+/**
+ * Shuffle options and return {shuffledOptions, newCorrectIndex}
+ * Forces balance: if last 3 displayed correct answers were all
+ * the same position, avoid that position for this question.
+ */
+function shuffleOptions(options, correctIdx, recentPositions) {
+  const n = options.length;
+  // Build indexed array
+  let indexed = options.map((o,i)=>({text:o, isCorrect: i===correctIdx}));
+
+  // Try up to 8 times to find a shuffle that doesn't put correct
+  // in an over-used position
+  for (let attempt = 0; attempt < 8; attempt++) {
+    // Fisher-Yates shuffle
+    for (let i = n-1; i > 0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [indexed[i],indexed[j]] = [indexed[j],indexed[i]];
+    }
+    const newCorrectPos = indexed.findIndex(o=>o.isCorrect);
+
+    // Check if this position is over-used (3+ in a row same pos)
+    const last3 = recentPositions.slice(-3);
+    const dominated = last3.length >= 3 && last3.every(p => p === newCorrectPos);
+    if (!dominated) break; // good shuffle — stop trying
+  }
+
+  const newCorrectPos = indexed.findIndex(o=>o.isCorrect);
+  return {
+    shuffledOptions: indexed.map(o=>o.text),
+    newCorrectIndex: newCorrectPos
+  };
+}
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+const PART1_COUNT = 10;
+const PART2_COUNT = 10;
+const TOTAL       = PART1_COUNT + PART2_COUNT;
+
+let S = {};  // quiz state — reset on each start
+
+function resetState(player) {
+  S = {
+    player,
+    currentPart:    1,
+    qIndex:         0,       // 0-based global question index
+    part1Done:      0,       // questions answered in part 1
+    part2Done:      0,
+    currentDiff:    'easy',
+    usedIds:        new Set(),
+    history:        [],      // [{id,part,dim,diff,correct,points}]
+    score:          0,
+    part1Score:     0,
+    part2Score:     0,
+    part1Correct:   0,
+    part2Correct:   0,
+    correctStreak:  0,
+    wrongStreak:    0,
+    currentQ:       null,    // rendered question with shuffled options
+    answered:       false,
+    startTime:      Date.now(),
+    qTimer:         null,
+    answerPositions:[], // track correct-answer positions for balance
+    dimScores: {
+      'AI Capabilities & Limitations':   {c:0,t:0},
+      'AI Output Evaluation':            {c:0,t:0},
+      'AI Workflow & Governance':        {c:0,t:0},
+      'AI in SCM — Capabilities & Risk': {c:0,t:0},
+      'AI Output Evaluation in SCM':     {c:0,t:0},
+      'AI Integration & Governance in SCM':{c:0,t:0},
+    },
+    yourEntry: null,
+  };
+}
+
+// ══════════════════════════════════════════════════════════
+// SCREEN
+// ══════════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  // nav highlight
+  document.getElementById('navHome').classList.toggle('active', name==='landing');
+  document.getElementById('navLB').classList.toggle('active',   name==='leaderboard');
+  if (name==='leaderboard') renderLB();
+}
+
+// ══════════════════════════════════════════════════════════
+// START
+// ══════════════════════════════════════════════════════════
+function startQuiz() {
+  const name = document.getElementById('regName').value.trim();
+  const org  = document.getElementById('regOrg').value.trim();
+  const exp  = document.getElementById('regExp').value;
+  const role = document.getElementById('regRole').value;
+  if (!name||!org||!exp||!role) { alert('Please complete all fields.'); return; }
+
+  resetState({name,org,exp,role});
+
+  // Build streak dots (20 total)
+  const dots = document.getElementById('streakDots');
+  dots.innerHTML = '';
+  for (let i=0;i<TOTAL;i++) {
+    const d = document.createElement('span');
+    d.className = 's-dot' + (i >= PART1_COUNT ? ' p2' : '');
+    d.id = 'sd'+i;
+    dots.appendChild(d);
+  }
+
+  showScreen('quiz');
+  loadQuestion();
+}
+
+// ══════════════════════════════════════════════════════════
+// ADAPTIVE QUESTION SELECTION
+// ══════════════════════════════════════════════════════════
+function pickQuestion() {
+  const part = S.currentPart;
+  const diff = S.currentDiff;
+  const role = S.player.role || '';
+
+  if (part === 1) {
+    // Part 1: difficulty-based only
+    let pool = QB.filter(q => q.part===1 && q.diff===diff && !S.usedIds.has(q.id));
+    if (!pool.length) pool = QB.filter(q => q.part===1 && !S.usedIds.has(q.id));
+    if (!pool.length) return null;
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+
+  // Part 2: role-prioritised selection
+  // Priority 1: role-matched + correct difficulty
+  let pool = QB.filter(q =>
+    q.part===2 && q.diff===diff && !S.usedIds.has(q.id) &&
+    Array.isArray(q.roles) && q.roles.includes(role)
+  );
+  // Priority 2: role-matched + any difficulty
+  if (!pool.length) {
+    pool = QB.filter(q =>
+      q.part===2 && !S.usedIds.has(q.id) &&
+      Array.isArray(q.roles) && q.roles.includes(role)
+    );
+  }
+  // Priority 3: universal (roles:[]) + correct difficulty
+  if (!pool.length) {
+    pool = QB.filter(q =>
+      q.part===2 && q.diff===diff && !S.usedIds.has(q.id) &&
+      Array.isArray(q.roles) && q.roles.length === 0
+    );
+  }
+  // Priority 4: any unused Part 2 question
+  if (!pool.length) {
+    pool = QB.filter(q => q.part===2 && !S.usedIds.has(q.id));
+  }
+  if (!pool.length) return null;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function adjustDiff(correct) {
+  if (correct) {
+    S.correctStreak++; S.wrongStreak = 0;
+    if (S.correctStreak >= 2) {
+      S.currentDiff = S.currentDiff==='easy' ? 'medium' : 'hard';
+      S.correctStreak = 0;
+    }
+  } else {
+    S.wrongStreak++; S.correctStreak = 0;
+    if (S.wrongStreak >= 2) {
+      S.currentDiff = S.currentDiff==='hard' ? 'medium' : 'easy';
+      S.wrongStreak = 0;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// LOAD QUESTION
+// ══════════════════════════════════════════════════════════
+function loadQuestion() {
+  clearInterval(S.qTimer);
+  S.answered = false;
+
+  const raw = pickQuestion();
+  if (!raw) { finishPart(); return; }
+
+  // Shuffle options for randomisation
+  const {shuffledOptions, newCorrectIndex} = shuffleOptions(
+    raw.options, raw.correct, S.answerPositions
+  );
+
+  // Store rendered question
+  S.currentQ = Object.assign({}, raw, {
+    displayOptions: shuffledOptions,
+    displayCorrect: newCorrectIndex,
+  });
+  S.usedIds.add(raw.id);
+
+  const q   = S.currentQ;
+  const part = S.currentPart;
+  const globalIdx = S.qIndex;
+
+  // ── Update topbar ──
+  const partLabel = part===1 ? 'Part 1 · General' : 'Part 2 · SCM Domain';
+  const partCls   = part===1 ? 'p1' : 'p2';
+  document.getElementById('partPill').textContent = partLabel;
+  document.getElementById('partPill').className = 'part-pill '+partCls;
+
+  const partProgress = part===1
+    ? S.part1Done / PART1_COUNT
+    : S.part2Done / PART2_COUNT;
+  document.getElementById('progressBar').style.width = (partProgress*100)+'%';
+  document.getElementById('progressBar').className = 'progress-bar '+partCls;
+
+  const partQ = part===1 ? S.part1Done+1 : S.part2Done+1;
+  const partTotal = part===1 ? PART1_COUNT : PART2_COUNT;
+  document.getElementById('qCounterText').textContent =
+    `Part ${part} · Q${partQ} of ${partTotal}`;
+  document.getElementById('qDimText').textContent = q.dim;
+  document.getElementById('liveScore').textContent = S.score;
+
+  // Diff tag
+  const dt = document.getElementById('diffTag');
+  dt.textContent = q.diff.charAt(0).toUpperCase()+q.diff.slice(1);
+  dt.className = 'diff-tag '+q.diff;
+
+  // ── Card stripe & dim tag ──
+  document.getElementById('cardStripe').className = 'card-stripe '+partCls;
+  document.getElementById('qNum').textContent = 'Q'+String(globalIdx+1).padStart(2,'0');
+  const dimTag = document.getElementById('qDimTag');
+  dimTag.textContent = q.dim;
+  dimTag.className = 'q-dim-tag '+partCls;
+
+  // Role tag (Part 2 only)
+  const roleTag = document.getElementById('qRoleTag');
+  const roleLabels = {scm:'SCM Manager',ops:'Operations',proc:'Procurement',log:'Logistics',analyst:'Analyst'};
+  if (part===2 && q.roles && q.roles.length>0) {
+    roleTag.textContent = '👤 ' + (roleLabels[q.roles[0]] || q.roles[0]);
+    roleTag.style.display = 'inline-block';
+  } else {
+    roleTag.style.display = 'none';
+  }
+
+  // Scenario
+  const sb = document.getElementById('scenarioBox');
+  const st = document.getElementById('scenarioText');
+  if (q.scenario) {
+    sb.style.display='block';
+    st.textContent = q.scenario;
+  } else {
+    sb.style.display='none';
+  }
+
+  document.getElementById('qText').textContent = q.text;
+
+  // ── Options ──
+  const ol = document.getElementById('optionsList');
+  ol.innerHTML = '';
+  const keys = ['A','B','C','D'];
+  q.displayOptions.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML =
+      `<span class="opt-key">${keys[i]}</span>
+       <span class="opt-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    ol.appendChild(btn);
+  });
+
+  // Explanation reset
+  const ex = document.getElementById('explanation');
+  ex.className = 'explanation';
+  ex.innerHTML = '';
+
+  // Next btn
+  const nb = document.getElementById('nextBtn');
+  nb.className = 'next-btn';
+  const isLast = (part===1 && S.part1Done===PART1_COUNT-1) ||
+                 (part===2 && S.part2Done===PART2_COUNT-1);
+  nb.textContent = isLast
+    ? (part===1 ? 'Continue to Part 2 →' : 'See My Results →')
+    : 'Next Question →';
+
+  // Re-animate card
+  const card = document.getElementById('questionCard');
+  card.style.animation='none';
+  void card.offsetWidth;
+  card.style.animation='';
+
+  // Timer
+  startTimer(q.timeLimit);
+}
+
+// ══════════════════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════════════════
+function startTimer(seconds) {
+  let rem = seconds;
+  const arc = document.getElementById('timerArc');
+  const num = document.getElementById('timerNum');
+  const circ = 107;
+
+  function tick() {
+    const pct = rem/seconds;
+    arc.style.strokeDashoffset = circ*(1-pct);
+    const isWarn = rem<=10;
+    arc.style.stroke = isWarn ? '#b83232' : rem<=20 ? '#b07010' : '#1b2c4a';
+    num.textContent = rem;
+    num.className = 'timer-num'+(isWarn?' warn':'');
+    if (rem<=0) { clearInterval(S.qTimer); if(!S.answered) selectAnswer(-1); return; }
+    rem--;
+  }
+  tick();
+  S.qTimer = setInterval(tick,1000);
+}
+
+// ══════════════════════════════════════════════════════════
+// ANSWER
+// ══════════════════════════════════════════════════════════
+function selectAnswer(chosenIdx) {
+  if (S.answered) return;
+  S.answered = true;
+  clearInterval(S.qTimer);
+
+  const q = S.currentQ;
+  const correct = chosenIdx === q.displayCorrect;
+
+  // Score & stats
+  if (correct) {
+    S.score += q.points;
+    if (q.part===1) { S.part1Score+=q.points; S.part1Correct++; }
+    else            { S.part2Score+=q.points; S.part2Correct++; }
+    if (S.dimScores[q.dim]) S.dimScores[q.dim].c++;
+  }
+  if (S.dimScores[q.dim]) S.dimScores[q.dim].t++;
+  if (q.part===1) S.part1Done++; else S.part2Done++;
+  S.qIndex++;
+
+  // Record answer position for balance tracking
+  if (chosenIdx !== -1) S.answerPositions.push(q.displayCorrect);
+
+  // History
+  S.history.push({id:q.id,part:q.part,dim:q.dim,diff:q.diff,correct,points:q.points});
+
+  // Adaptive difficulty
+  adjustDiff(correct);
+
+  // Streak dot
+  const dot = document.getElementById('sd'+(S.qIndex-1));
+  if (dot) dot.className = 's-dot'+(q.part===2?' p2':'') +' '+(chosenIdx===-1?'skip':correct?'correct':'wrong');
+
+  // Flash
+  const fl = document.getElementById('flash');
+  fl.className = 'flash '+(correct?'c':'w')+' show';
+  setTimeout(()=>fl.className='flash',380);
+
+  // Highlight options
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((o,i)=>{
+    o.disabled = true;
+    if (i===q.displayCorrect) {
+      if (correct && i===chosenIdx) o.className='option correct-ans';
+      else o.className='option reveal-ans';
+    } else if (i===chosenIdx) {
+      o.className='option wrong-ans';
+    }
+  });
+
+  // Explanation
+  const ex = document.getElementById('explanation');
+  const icon = correct ? '✓' : '✗';
+  ex.className = 'explanation visible '+(correct?'correct-exp':'wrong-exp');
+  ex.innerHTML = `<span class="exp-icon">${icon}</span>${q.explanation}`;
+
+  // Streak msg
+  const consec = (() => {
+    let c=0;
+    for (let i=S.history.length-1;i>=0;i--) {
+      if(S.history[i].correct) c++; else break;
+    }
+    return c;
+  })();
+  document.getElementById('streakMsg').textContent =
+    consec>=3 ? `🔥 ${consec} in a row!` : '';
+
+  // Live score
+  document.getElementById('liveScore').textContent = S.score;
+
+  // Show next btn
+  document.getElementById('nextBtn').className = 'next-btn vis';
+}
+
+// ══════════════════════════════════════════════════════════
+// NEXT
+// ══════════════════════════════════════════════════════════
+function nextQuestion() {
+  const p = S.currentPart;
+  const done = p===1 ? S.part1Done : S.part2Done;
+  const total = p===1 ? PART1_COUNT : PART2_COUNT;
+
+  if (done >= total) {
+    finishPart();
+  } else {
+    loadQuestion();
+  }
+}
+
+function finishPart() {
+  clearInterval(S.qTimer);
+  if (S.currentPart===1) {
+    // Show transition with role-personalised message
+    const roleLabels = {
+      scm:'Supply Chain Manager', ops:'Operations Manager',
+      proc:'Procurement Manager', log:'Logistics Coordinator',
+      analyst:'Supply Chain Analyst', other:'supply chain professional'
+    };
+    const roleLabel = roleLabels[S.player.role] || 'supply chain professional';
+    document.getElementById('transDesc').textContent =
+      `General AI Literacy complete. Part 2 is personalised for your role as ${roleLabel} — each scenario reflects real daily-work situations you are likely to encounter.`;
+    document.getElementById('transPart1Score').textContent = S.part1Score;
+    S.currentPart = 2;
+    S.currentDiff = 'easy'; // reset difficulty for part 2
+    S.correctStreak = 0; S.wrongStreak = 0;
+    showScreen('transition');
+  } else {
+    endQuiz();
+  }
+}
+
+function beginPart2() {
+  showScreen('quiz');
+  loadQuestion();
+}
+
+// ══════════════════════════════════════════════════════════
+// END QUIZ
+// ══════════════════════════════════════════════════════════
+function endQuiz() {
+  clearInterval(S.qTimer);
+  const elapsed = Math.round((Date.now()-S.startTime)/1000);
+  const mins = Math.floor(elapsed/60);
+  const secs = elapsed%60;
+
+  // Grade based on normalised score (max possible ≈ TOTAL*20 rough average)
+  const maxRough = TOTAL * 20;
+  const pct = S.score / maxRough * 100;
+  let grade, gradeClass, gradeLabel, desc;
+  if      (pct>=85){grade='A';gradeClass='grade-A';gradeLabel='Advanced';
+    desc='Exceptional AI literacy across both general and domain-specific dimensions. You demonstrate sophisticated understanding of AI capabilities, limitations, output evaluation, and governance in supply chain contexts.'}
+  else if (pct>=70){grade='B';gradeClass='grade-B';gradeLabel='Proficient';
+    desc='Strong AI literacy with solid practical judgment. Some advanced topics — model calibration, algorithmic bias, and agentic AI governance — warrant further development.'}
+  else if (pct>=55){grade='C';gradeClass='grade-C';gradeLabel='Developing';
+    desc='Foundational AI literacy is present. Focused training on output evaluation, AI governance, and supply chain-specific AI risks would strengthen your capabilities significantly.'}
+  else if (pct>=40){grade='D';gradeClass='grade-D';gradeLabel='Beginner';
+    desc='Core AI concepts require further study. A structured AI literacy programme tailored to supply chain professionals is recommended before operational AI tool use.'}
+  else             {grade='F';gradeClass='grade-F';gradeLabel='Needs Training';
+    desc='Significant AI literacy gaps identified. Formal training in AI fundamentals and supply chain AI applications is strongly recommended.'}
+
+  // Avg difficulty
+  const dm={easy:1,medium:2,hard:3};
+  const avg = S.history.reduce((a,h)=>a+dm[h.diff],0)/S.history.length;
+  const avgLabel = avg>=2.3?'Hard':avg>=1.7?'Medium':'Easy';
+
+  // Populate results
+  document.getElementById('resName').textContent = S.player.name;
+  document.getElementById('resBigGrade').textContent = grade;
+  document.getElementById('resBigGrade').className = 'res-big-grade '+gradeClass;
+  document.getElementById('resGradeLabel').textContent = gradeLabel;
+  document.getElementById('resGradeLabel').className = 'res-grade-label '+gradeClass;
+  document.getElementById('resDesc').textContent = desc;
+
+  document.getElementById('rsTotalScore').textContent = S.score;
+  document.getElementById('rsCorrect').textContent = `${S.part1Correct+S.part2Correct}/${TOTAL}`;
+  document.getElementById('rsTime').textContent = `${mins}m ${secs}s`;
+  document.getElementById('rsDiff').textContent = avgLabel;
+
+  document.getElementById('rsPart1').textContent = S.part1Score;
+  document.getElementById('rsPart1Of').textContent = `${S.part1Correct}/${PART1_COUNT} correct`;
+  document.getElementById('rsPart2').textContent = S.part2Score;
+  document.getElementById('rsPart2Of').textContent = `${S.part2Correct}/${PART2_COUNT} correct`;
+
+  // Dim breakdown
+  const bk = document.getElementById('dimBreakdown');
+  bk.innerHTML='';
+  const dimColors = {
+    'AI Capabilities & Limitations':   '#1b2c4a',
+    'AI Output Evaluation':            '#2a6a9a',
+    'AI Workflow & Governance':        '#1a5a7a',
+    'AI in SCM — Capabilities & Risk': '#c8860a',
+    'AI Output Evaluation in SCM':     '#a06a10',
+    'AI Integration & Governance in SCM':'#8a4a00',
+  };
+  Object.entries(S.dimScores).forEach(([dim,s])=>{
+    if(s.t===0) return;
+    const p2=Math.round(s.c/s.t*100);
+    const vc=p2>=70?'s':p2>=50?'o':'w';
+    const vl=p2>=70?'Strong':p2>=50?'OK':'Weak';
+    const color = dimColors[dim]||'#1b2c4a';
+    bk.innerHTML+=`
+      <div class="bk-row">
+        <div class="bk-name">${dim}</div>
+        <div class="bk-bar-rail">
+          <div class="bk-bar" data-w="${p2}" style="width:0%;background:${color}"></div>
+        </div>
+        <div class="bk-pct">${p2}%</div>
+        <div class="bk-verdict ${vc}">${vl}</div>
+      </div>`;
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.bk-bar').forEach(b=>b.style.width=b.dataset.w+'%');
+  },200);
+
+  // Save to leaderboard
+  const entry = {
+    name:S.player.name, org:S.player.org,
+    score:S.score, grade,
+    part1Score:S.part1Score, part2Score:S.part2Score,
+    correct:S.part1Correct+S.part2Correct,
+    time:`${mins}:${String(secs).padStart(2,'0')}`,
+    avgDiff:avgLabel, ts:Date.now(),
+  };
+  S.yourEntry = entry;
+  lbPush(entry);
+
+  showScreen('results');
+}
+
+// ══════════════════════════════════════════════════════════
+// LEADERBOARD
+// ══════════════════════════════════════════════════════════
+let _lbFilterCurrent = 'all';
+
+function lbPush(e){
+  const lb=lbLoad(); lb.push(e);
+  lb.sort((a,b)=>b.score-a.score);
+  localStorage.setItem('scm_lb2',JSON.stringify(lb));
+}
+function lbLoad(){
+  try{return JSON.parse(localStorage.getItem('scm_lb2')||'[]');}catch{return[];}
+}
+function lbFilter(f,btn){
+  _lbFilterCurrent=f;
+  document.querySelectorAll('.lbf').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderLB();
+}
+function renderLB(){
+  let lb=lbLoad();
+  document.getElementById('lbCount').textContent=lb.length;
+
+  if(S.yourEntry){
+    const fi=lb.findIndex(e=>e.ts===S.yourEntry.ts);
+    const bn=document.getElementById('yourBanner');
+    bn.classList.add('vis');
+    document.getElementById('ybRank').textContent='#'+(fi+1);
+    document.getElementById('ybOf').textContent=`of ${lb.length} participants`;
+    document.getElementById('ybScore').textContent=S.yourEntry.score;
+  }
+
+  const f=_lbFilterCurrent;
+  let disp=lb;
+  if(['A','B','C','D','F'].includes(f)) disp=lb.filter(e=>e.grade===f);
+  else if(f==='part1') disp=[...lb].sort((a,b)=>b.part1Score-a.part1Score);
+  else if(f==='part2') disp=[...lb].sort((a,b)=>b.part2Score-a.part2Score);
+
+  const body=document.getElementById('lbBody');
+  body.innerHTML='';
+  disp.forEach((e,i)=>{
+    const fullRank=lb.findIndex(x=>x.ts===e.ts)+1;
+    const rk=fullRank===1?'🥇':fullRank===2?'🥈':fullRank===3?'🥉':'#'+fullRank;
+    const rkcls=fullRank===1?'rk1':fullRank===2?'rk2':fullRank===3?'rk3':'rko';
+    const isYou=S.yourEntry&&e.ts===S.yourEntry.ts;
+    const tr=document.createElement('tr');
+    if(isYou) tr.className='you-row';
+    tr.innerHTML=`
+      <td><span class="rank-badge ${rkcls}">${rk}</span></td>
+      <td><div class="td-name">${e.name}${isYou?' <span style="font-size:.7rem;color:var(--amber)">(you)</span>':''}</div><div class="td-org">${e.org}</div></td>
+      <td class="td-score">${e.score}</td>
+      <td style="font-family:var(--mono);font-size:.78rem">${e.part1Score||'—'}</td>
+      <td style="font-family:var(--mono);font-size:.78rem">${e.part2Score||'—'}</td>
+      <td><span class="grade-pip g${e.grade}">${e.grade}</span></td>
+      <td class="td-time">${e.time}</td>`;
+    body.appendChild(tr);
+  });
+  if(!disp.length) body.innerHTML='<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted);font-family:var(--mono);font-size:.8rem">No entries for this filter.</td></tr>';
+}
+
+function retake(){S.yourEntry=null;document.getElementById('yourBanner').classList.remove('vis');showScreen('landing');}
+
+// ══════════════════════════════════════════════════════════
+// SEED LEADERBOARD
+// ══════════════════════════════════════════════════════════
+function seedLB(){
+  if(lbLoad().length>0) return;
+  const demos=[
+    {name:'Alex Rivera',   org:'Apex Logistics',       score:410,grade:'A',part1Score:190,part2Score:220,correct:18,time:'11:24',avgDiff:'Hard',  ts:Date.now()-3600000},
+    {name:'Sam Okafor',    org:'GlobalTrade Inc.',      score:360,grade:'A',part1Score:170,part2Score:190,correct:16,time:'13:05',avgDiff:'Hard',  ts:Date.now()-7200000},
+    {name:'Lin Wei',       org:'Pacific Supply Co.',   score:300,grade:'B',part1Score:150,part2Score:150,correct:14,time:'12:40',avgDiff:'Medium',ts:Date.now()-10000000},
+    {name:'Jordan Hayes',  org:'MidWest Freight',      score:260,grade:'B',part1Score:130,part2Score:130,correct:13,time:'14:12',avgDiff:'Medium',ts:Date.now()-14000000},
+    {name:'Dana Müller',   org:'Euro SCM GmbH',        score:210,grade:'B',part1Score:100,part2Score:110,correct:11,time:'13:55',avgDiff:'Medium',ts:Date.now()-18000000},
+    {name:'Casey Kim',     org:'Seoul Sourcing Ltd.',  score:170,grade:'C',part1Score: 90,part2Score: 80,correct: 9,time:'11:30',avgDiff:'Easy',  ts:Date.now()-22000000},
+    {name:'Morgan Patel',  org:'Tri-State Warehousing',score:130,grade:'C',part1Score: 70,part2Score: 60,correct: 8,time:'14:50',avgDiff:'Easy',  ts:Date.now()-26000000},
+  ];
+  localStorage.setItem('scm_lb2',JSON.stringify(demos));
+}
+
+seedLB();
+</script>
+</body>
+</html>
